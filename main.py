@@ -1,7 +1,7 @@
 import os
 import secrets
 import requests
-from forms import Search_Form
+from forms import Search_Form, LoginForm, RegisterForm
 from flask import session, request
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template
@@ -18,25 +18,27 @@ proxied = FlaskBehindProxy(app)
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 
 # The intro page
-@app.route("/")
 @app.route("/intro", methods=['GET', 'POST'])
 def intro():
     return render_template('intro.html', login=url_for('login'), signup=url_for('signup'))
 
 # Home webpage function
-@app.route("/home/<user>", methods=['GET', 'POST'])
+@app.route("/home", methods=['GET', 'POST'])
 def home(user):
     print("home page")
 
+@app.route("/")
 # login page function
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html', signup=url_for("signup"))
+    form = LoginForm()
+    return render_template('login.html', form=form, display="none", signup=url_for("signup"))
 
 # signup page function
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    return render_template('signup.html', login=url_for("login"))
+    form = RegisterForm()
+    return render_template('signup.html', form=form, display="none", login=url_for("login"))
 
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
