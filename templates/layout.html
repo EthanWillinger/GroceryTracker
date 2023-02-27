@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&family=Indie+Flower&family=Merienda&display=swap" rel="stylesheet">
+</head>
+  <body>
+      <div class="search__container">
+
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            {% if form.search.errors %}
+            {{ form.search(class="search__input", placeholder="Search {{ page_name }}") }}
+
+            <div class="invalid-feedback">
+                {% for error in form.search.errors%}
+                    <span>{{error}}</span>
+                {% endfor %}
+            </div>
+            
+            {% else %}
+                {{ form.search(class="search__input", placeholder="Search {{ page_name }}") }}
+            {% endif %}
+        </form>
+
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <a href="/"><img src="{{ url_for('images', filename='logo.png') }}"></a>
+        </div>
+    </nav>
+
+      {% block content %}{% endblock %}
+  </body>
+</html>
