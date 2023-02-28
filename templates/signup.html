@@ -2,41 +2,47 @@
 
 {% block content %}
 <div class="signup-form">
-  <form action="/examples/actions/confirmation.php" method="post">
-  <h2>Create an account</h2>
-  <p>Please fill in this form to start tracking your groceries!</p>
-  <hr>
-      <div class="form-group">
-    <div class="input-group">
-      <span class="input-group-addon"><i class="fa fa-user"></i></span>
-      <input type="text" class="form-control" name="username" placeholder="Username" required="required">
+    <form method="POST">
+      <h2>Create an account</h2>
+      <p>Please fill in this form to start tracking your groceries!</p>
+      <hr>
+      
+    <div class="form-group">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        {{ form.username(class="form-control") }}
+      </div>
     </div>
+
+    <div class="form-group">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+        {{ form.email(class="form-control") }}
       </div>
-      <div class="form-group">
-    <div class="input-group">
-      <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-      <input type="email" class="form-control" name="email" placeholder="Email Address" required="required">
     </div>
+
+    <div class="form-group">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+        {{ form.password(class="form-control") }}
       </div>
-  <div class="form-group">
-    <div class="input-group">
-      <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-      <input type="text" class="form-control" name="password" placeholder="Password" required="required">
     </div>
+
+    <div class="form-group">
+      <div class="input-group">
+        <span class="input-group-addon">
+          <i class="fa fa-lock"></i>
+          <i class="fa fa-check"></i>
+        </span>
+        {{ form.confirm(class="form-control") }}
       </div>
-  <div class="form-group">
-    <div class="input-group">
-      <span class="input-group-addon">
-        <i class="fa fa-lock"></i>
-        <i class="fa fa-check"></i>
-      </span>
-      <input type="text" class="form-control" name="confirm_password" placeholder="Confirm Password" required="required">
     </div>
-      </div>
-  <div class="form-group">
-          <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
-      </div>
-  <div class="form-group">Already have an account? <a href="{{login}}">Sign In</a></div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
+    </div>
+    
+    <div class="form-group">Already have an account? <a href="{{login}}">Sign In</a></div>
   </form>
 </div>
 {% endblock %}
