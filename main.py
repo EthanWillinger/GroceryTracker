@@ -27,13 +27,13 @@ def intro():
 def home(user):
     print("home page")
 
-@app.route("/")
 # login page function
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     return render_template('login.html', form=form, display="none", signup=url_for("signup"))
 
+@app.route("/")
 # signup page function
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
