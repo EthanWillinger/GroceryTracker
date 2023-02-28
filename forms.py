@@ -7,13 +7,13 @@ class LoginForm(FlaskForm):
     pass
 
 class RegisterForm(FlaskForm):
-    username = StringField("Username", validators=[validators.Length(min=3, max=25), validators.DataRequired(message="Please Fill This Field")])
-    email = StringField("Email", validators=[validators.Email(message="Please enter a valid email address")])
-    password = PasswordField("Password", validators =[
+    username = StringField("Username", render_kw={"placeholder": "Username"}, validators=[validators.Length(min=3, max=25), validators.DataRequired(message="Please Fill This Field")])
+    email = StringField("Email",render_kw={"placeholder": "Email"}, validators=[validators.Email(message="Please enter a valid email address")])
+    password = PasswordField("Password", render_kw={"placeholder": "Password"}, validators =[
         validators.DataRequired(message="Please Fill This Field"),
         validators.EqualTo(fieldname="confirm", message="Your Passwords Do Not Match")
         ])
-    confirm = PasswordField("Confirm Password", validators=[validators.DataRequired(message="Please Fill This Field")])
+    confirm = PasswordField("Confirm Password", render_kw={"placeholder": "Confirm Password"}, validators=[validators.DataRequired(message="Please Fill This Field")])
 
 # Flask Form for the search bar
 class Search_Form(FlaskForm):

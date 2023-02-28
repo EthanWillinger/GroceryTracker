@@ -9,7 +9,6 @@ from flask import url_for, flash, redirect
 from flask_behind_proxy import FlaskBehindProxy
 from flask_login import LoginManager, UserMixin, login_user
 from flask_login import login_required, logout_user, current_user
-
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Create a flask app for the website
