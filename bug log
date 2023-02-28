@@ -1,0 +1,3 @@
+Bug Log:
+
+Form allows user to put anything in username and doesn't check for if password and confirm password match

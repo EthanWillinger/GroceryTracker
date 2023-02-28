@@ -48,9 +48,10 @@ def home(user):
 
 # login page function
 @app.route('/login', methods=['GET', 'POST'])
+#Umair code goes here
 def login():
     form = LoginForm(request.form)
-
+    
     return render_template('login.html', form=form, display="none", signup=url_for("signup"))
 
 @app.route("/")
@@ -61,7 +62,7 @@ def signup():
 
     # Checking that method is post and form is valid or not.
     if request.method == 'POST' and form.validate():
-
+        print("Yay")
         #storing a users password in plain text is just... stupid.... encript it :)
         hashed_password = generate_password_hash(form.password.data, method='sha256')
 
