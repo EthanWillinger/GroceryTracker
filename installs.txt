@@ -1,0 +1,7 @@
+email_validators
+requests
+flask
+flask_sqlalchemy
+flask_login
+flask_behind_proxy
+flask_wtf
