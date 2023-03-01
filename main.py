@@ -10,30 +10,42 @@ from flask_behind_proxy import FlaskBehindProxy
 from flask_login import LoginManager, UserMixin, login_user
 from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+import MySQLdb
+
 
 # Create a flask app for the website
 app = Flask(__name__) 
 proxied = FlaskBehindProxy(app)
 
+#Add database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 # Assign the flask app an secret key
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 
-#Database configuration and creating sqlalchemy object
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/auth'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy()
+app.app_context().push()
+
+#Initialize the database
+db = SQLAlchemy(app)
+
+db.create_all()
+db.session.commit()
+
 
 #Create User Model
-
 class User(db.Model):
-
-    __tablename__ = 'usertable'
-
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique = True)
     email = db.Column(db.String(50), unique = True)
     password = db.Column(db.String(256), unique=True)
+
+    # Create a string
+    def __repr__(self):
+        return '<Name %r>' % self.name
+    
+
+
 
 # The intro page
 @app.route("/intro", methods=['GET', 'POST'])
@@ -45,6 +57,7 @@ def intro():
 def home(user):
     print("home page")
 
+@app.route("/")
 # login page function
 @app.route('/login', methods=['GET', 'POST'])
 #Umair code goes here
@@ -53,39 +66,31 @@ def login():
     
     return render_template('login.html', form=form, display="none", signup=url_for("signup"))
 
-@app.route("/")
 # signup page function
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    username = None
     form = RegisterForm(request.form)
-
-    # Checking that method is post and form is valid or not.
-    if request.method == 'POST' and form.validate():
-        print("Yay")
-        #storing a users password in plain text is just... stupid.... encript it :)
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-
-        # create new user model object
+    if form.validate_on_submit():
         new_user = User(
-
             username = form.username.data,
             email = form.email.data,
-            password = hashed_password
+            password = form.password.data
         )
 
-        # saving user object into data base with hashed password
         db.session.add(new_user)
+        try:
+            db.session.commit()
+        except:
+            return render_template('signup.html', form=form, login=url_for("login"), display = "block")
 
-        db.session.commit()
+        flash('You have successfully registered', 'success')
 
-        flash('Welcome to the cult', 'success')
-        
-        # if registration successful, then redirecting to login page
         return redirect(url_for('login'))
-    
     else:
-        # if method is Get, than render registration form
-        return render_template('signup.html', form=form, display="none", login=url_for("login"))
+        return render_template('signup.html', form = form)
+
+
 
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
@@ -110,5 +115,4 @@ def logout():
     return redirect(url_for('intro'))
 
 if __name__ == '__main__':
-    db.create_all()
     app.run(debug=True, host="0.0.0.0")
