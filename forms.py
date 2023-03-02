@@ -12,9 +12,9 @@ class RegisterForm(FlaskForm):
     email = StringField("Email",render_kw={"placeholder": "Email"}, validators=[validators.Email(message="Please enter a valid email address")])
     password = PasswordField("Password", render_kw={"placeholder": "Password"}, validators =[
         validators.DataRequired(message="Please Fill This Field")
-        validators.EqualTo(fieldname="confirm", message="Your Passwords Do Not Match")
+        #validators.EqualTo(fieldname="confirm", message="Your Passwords Do Not Match")
         ])
-    confirm = PasswordField("Confirm Password", render_kw={"placeholder": "Confirm Password"}, validators=[validators.DataRequired(message="Please Fill This Field")])
+    #confirm = PasswordField("Confirm Password", render_kw={"placeholder": "Confirm Password"}, validators=[validators.DataRequired(message="Please Fill This Field")])
 
     updated = HiddenField()
     submit = SubmitField('Add/Update Record')
