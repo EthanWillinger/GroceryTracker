@@ -7,18 +7,15 @@ class LoginForm(FlaskForm):
     pass
 
 class RegisterForm(FlaskForm):
-    id_field = HiddenField()
     username = StringField("Username", render_kw={"placeholder": "Username"}, validators=[validators.Length(min=3, max=25), validators.DataRequired(message="Please Fill This Field")])
     email = StringField("Email",render_kw={"placeholder": "Email"}, validators=[validators.Email(message="Please enter a valid email address")])
     password = PasswordField("Password", render_kw={"placeholder": "Password"}, validators =[
-        validators.DataRequired(message="Please Fill This Field")
-        #validators.EqualTo(fieldname="confirm", message="Your Passwords Do Not Match")
+        validators.DataRequired(message="Please Fill This Field"),
+        validators.EqualTo(fieldname="confirm", message="Your Passwords Do Not Match")
         ])
-    #confirm = PasswordField("Confirm Password", render_kw={"placeholder": "Confirm Password"}, validators=[validators.DataRequired(message="Please Fill This Field")])
+    confirm = PasswordField("Confirm Password", render_kw={"placeholder": "Confirm Password"}, validators=[validators.DataRequired(message="Please Fill This Field")])
 
-    updated = HiddenField()
-    submit = SubmitField('Add/Update Record')
-
+    submit = SubmitField("Create Account!")
 
 # Flask Form for the search bar
 class Search_Form(FlaskForm):

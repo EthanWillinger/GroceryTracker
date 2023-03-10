@@ -1,9 +1,9 @@
 {% extends "auth.html" %}
 
 {% block content %}
-<div class="signup-form">
-  
-    <form method="POST" action="{{url_for('login')}}">
+
+  <div class="signup-form">
+    <form method="POST" action="http://localhost:5000/success">
       <h2>Create an account</h2>
       <p>Please fill in this form to start tracking your groceries!</p>
       <hr>
@@ -29,15 +29,19 @@
       </div>
     </div>
 
-    
-
     <div class="form-group">
-      <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
+      <div class="input-group">
+        <span class="input-group-addon">
+          <i class="fa fa-lock"></i>
+          <i class="fa fa-check"></i>
+        </span>
+        {{ form.confirm(class="form-control") }}
+      </div>
     </div>
+
+    {{ form.submit() }}
     
     <div class="form-group">Already have an account? <a href="{{login}}">Sign In</a></div>
   </form>
-
-  
 </div>
 {% endblock %}

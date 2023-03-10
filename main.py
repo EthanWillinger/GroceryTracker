@@ -13,9 +13,10 @@ import MySQLdb
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
-
+db = SQLAlchemy()
 # Create a flask app for the website
 app = Flask(__name__) 
+
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 
 db_name = 'UserInformation.db'
@@ -23,8 +24,7 @@ db_name = 'UserInformation.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_name
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-
-db = SQLAlchemy(app)
+db.init_app(app)
 
 class User(db.Model):
     __tablename__='users'
@@ -37,6 +37,9 @@ class User(db.Model):
         self.username = username
         self.email = email
         self.password = password
+
+with app.app_context():
+    db.create_all()
 
 # The intro page
 @app.route("/intro", methods=['GET', 'POST'])
@@ -53,26 +56,26 @@ def home(user):
 @app.route('/login', methods=['GET', 'POST'])
 #Umair code goes here
 def login():
-    form = LoginForm(request.form)
-    
+    form = LoginForm()
     return render_template('login.html', form=form, display="none", signup=url_for("signup"))
 
 # signup page function
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
-    if request.method == "POST":
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
+    return render_template('signup.html', form=form)
 
-        new_user = User(username,email,password)
-
-        db.session.add(new_user)
-        db.session.commit()
-        return render_template('login.html', form=form)
-    else:
-        return render_template('signup.html', form=form)
+@app.route('/register_success', methods=['GET', 'POST'])
+def success():
+    form = RegisterForm()
+    if request.method=="POST":
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
+        print(username)
+        print(password)
+        print(email)
+        return render_template("login.html")
 
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
