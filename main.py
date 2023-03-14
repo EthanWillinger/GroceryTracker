@@ -13,33 +13,32 @@ import MySQLdb
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
-db = SQLAlchemy()
+
 # Create a flask app for the website
 app = Flask(__name__) 
 
+#Add Database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' 
+# Secret key
 app.config['SECRET_KEY'] = secrets.token_hex(16)
+# Initialize The Database
+db = SQLAlchemy(app)
 
-db_name = 'UserInformation.db'
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_name
-
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-db.init_app(app)
-
-class User(db.Model):
-    __tablename__='users'
+# Create Model
+class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
-    email = db.Column(db.String)
-    password = db.Column(db.String)
+    username = db.Column(db.String(25), nullable=False)
+    email = db.Column(db.String(), nullable=False, unique=True)
+    password = db.Column(db.String(), nullable=False)
 
-    def __init__(self,username,email,password):
-        self.username = username
-        self.email = email
-        self.password = password
-
+    # Create A String
+    def __repr__(self):
+        return "<username %r>" % self.username
+    
 with app.app_context():
     db.create_all()
+
+ 
 
 # The intro page
 @app.route("/intro", methods=['GET', 'POST'])
@@ -69,12 +68,14 @@ def signup():
 def success():
     form = RegisterForm()
     if request.method=="POST":
+        user = Users(username=form.username.data, email=form.email.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
         username = form.username.data
-        email = form.email.data
-        password = form.password.data
-        print(username)
-        print(password)
-        print(email)
+        form.username.data = ''
+        form.email.data = ''
+        form.password.data = ''
+        flash("User Added!")
         return render_template("login.html")
 
 # grocery index page function
