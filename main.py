@@ -62,7 +62,7 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
-    return render_template('signup.html', form=form)
+    return render_template('signup.html', form=form, display="none", login=url_for("login"))
 
 @app.route('/register_success', methods=['GET', 'POST'])
 def success():
