@@ -68,16 +68,22 @@ def signup():
 def success():
     form = RegisterForm()
     if request.method=="POST":
-        user = Users(username=form.username.data, email=form.email.data, password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        username = form.username.data
-        form.username.data = ''
-        form.email.data = ''
-        form.password.data = ''
-        flash("User Added!")
-        return render_template("login.html")
+        email_exists = db.session.query(db.session.query(Users).filter_by(email=form.email.data).exists()).scalar()
+        print(email_exists)
+        if email_exists == False:
+            user = Users(username=form.username.data, email=form.email.data, password=form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            form.username.data = ''
+            form.email.data = ''
+            form.password.data = ''
+            flash("User Added!")
+            return render_template('login.html', form=form, display="none", signup=url_for("signup"))
 
+        else:
+            flash("An account with this email already exists")
+            form.email.data = ''
+            return render_template('signup.html', form=form)
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
