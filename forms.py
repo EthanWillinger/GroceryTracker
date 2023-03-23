@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import Form, BooleanField, StringField, PasswordField, validators, TextAreaField, IntegerField
+from wtforms import Form, BooleanField, StringField, PasswordField, validators, TextAreaField, IntegerField, SubmitField, HiddenField
 from wtforms.validators import DataRequired
 
 
@@ -14,6 +14,8 @@ class RegisterForm(FlaskForm):
         validators.EqualTo(fieldname="confirm", message="Your Passwords Do Not Match")
         ])
     confirm = PasswordField("Confirm Password", render_kw={"placeholder": "Confirm Password"}, validators=[validators.DataRequired(message="Please Fill This Field")])
+
+    submit = SubmitField("Create Account!")
 
 # Flask Form for the search bar
 class Search_Form(FlaskForm):
