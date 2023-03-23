@@ -67,16 +67,31 @@ def signup():
 def success():
     form = RegisterForm()
     if request.method=="POST":
+
+        #Check if the email exists in the database already
         email_exists = db.session.query(db.session.query(Users).filter_by(email=form.email.data).exists()).scalar()
-        print(email_exists)
+        #Debug Code on next line
+        #print(email_exists)
+
+        #If the email is not in the database, process the form and add it to users.db
         if not email_exists:
+
+            #Object that we will be placing in our add query
             user = Users(username=form.username.data, email=form.email.data, password=form.password.data)
+
+            #Add to database
             db.session.add(user)
+
+            #finalize this action
             db.session.commit()
+
+            #Clear all Registration form fields for future use
             clearForm(form)
-            flash("User Added!")
+
+            #Redirect user to the login page
             return render_template('login.html', form=form, display="none", signup=url_for("signup"))
 
+        #If the user email already has an account in the database, reload the page and only clear the email field.
         else:
             flash("An account with this email already exists")
             form.email.data = ''
