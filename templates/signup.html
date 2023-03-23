@@ -5,12 +5,16 @@
   <div class="signup-form">
     <form method="POST" action="http://localhost:5000/register_success">
       <h2>Create an account</h2>
-      <p>Please fill in this form to start tracking your groceries!</p>
+      <p style="color: green">Please fill in this form to start tracking your groceries!</p>
+      <br>
+      <p style="color: green">Username must be between 3 and 25 characters</p>
+      
       <hr>
       
     <div class="form-group">
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        
         {{ form.username(class="form-control") }}
       </div>
     </div>
