@@ -5,7 +5,6 @@ from forms import Search_Form, LoginForm, RegisterForm
 from flask import session, request
 from flask import Flask, render_template
 from flask import url_for, flash, redirect
-from flask_behind_proxy import FlaskBehindProxy
 from flask_login import LoginManager, UserMixin, login_user
 from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -68,18 +67,31 @@ def signup():
 def success():
     form = RegisterForm()
     if request.method=="POST":
+
+        #Check if the email exists in the database already
         email_exists = db.session.query(db.session.query(Users).filter_by(email=form.email.data).exists()).scalar()
-        print(email_exists)
-        if email_exists == False:
+        #Debug Code on next line
+        #print(email_exists)
+
+        #If the email is not in the database, process the form and add it to users.db
+        if not email_exists:
+
+            #Object that we will be placing in our add query
             user = Users(username=form.username.data, email=form.email.data, password=form.password.data)
+
+            #Add to database
             db.session.add(user)
+
+            #finalize this action
             db.session.commit()
-            form.username.data = ''
-            form.email.data = ''
-            form.password.data = ''
-            flash("User Added!")
+
+            #Clear all Registration form fields for future use
+            clearForm(form)
+
+            #Redirect user to the login page
             return render_template('login.html', form=form, display="none", signup=url_for("signup"))
 
+        #If the user email already has an account in the database, reload the page and only clear the email field.
         else:
             flash("An account with this email already exists")
             form.email.data = ''
@@ -105,6 +117,13 @@ def account():
 def logout():
     logout_user()
     return redirect(url_for('intro'))
+
+def clearForm(form):
+    form.username.data = ''
+    form.email.data = ''
+    form.password.data = ''
+    return form
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
