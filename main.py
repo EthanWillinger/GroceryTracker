@@ -73,9 +73,7 @@ def success():
             user = Users(username=form.username.data, email=form.email.data, password=form.password.data)
             db.session.add(user)
             db.session.commit()
-            form.username.data = ''
-            form.email.data = ''
-            form.password.data = ''
+            clearForm(form)
             flash("User Added!")
             return render_template('login.html', form=form, display="none", signup=url_for("signup"))
 
@@ -104,6 +102,13 @@ def account():
 def logout():
     logout_user()
     return redirect(url_for('intro'))
+
+def clearForm(form):
+    form.username.data = ''
+    form.email.data = ''
+    form.password.data = ''
+    return form
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
