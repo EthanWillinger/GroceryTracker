@@ -5,7 +5,6 @@ from forms import Search_Form, LoginForm, RegisterForm
 from flask import session, request
 from flask import Flask, render_template
 from flask import url_for, flash, redirect
-from flask_behind_proxy import FlaskBehindProxy
 from flask_login import LoginManager, UserMixin, login_user
 from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -70,7 +69,7 @@ def success():
     if request.method=="POST":
         email_exists = db.session.query(db.session.query(Users).filter_by(email=form.email.data).exists()).scalar()
         print(email_exists)
-        if email_exists == False:
+        if not email_exists:
             user = Users(username=form.username.data, email=form.email.data, password=form.password.data)
             db.session.add(user)
             db.session.commit()
