@@ -95,7 +95,7 @@ def success():
         else:
             flash("An account with this email already exists")
             form.email.data = ''
-            return render_template('signup.html', form=form)
+            return render_template('signup.html', form=form, display="none", login=url_for("login"))
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
