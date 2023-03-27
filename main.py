@@ -61,6 +61,7 @@ def login():
 
         if email_exists and password_exists:
             clearFormLogin(form)
+            #Page will change this is for testing purposes
             return render_template('intro.html')
         else:
             clearFormLogin(form)
