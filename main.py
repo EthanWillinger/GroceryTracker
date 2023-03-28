@@ -65,18 +65,13 @@ def login():
             return render_template('intro.html')
         else:
             clearFormLogin(form)
-            return render_template('Login.html', form=form, display="block", login=url_for("login"))
-    else:
-        return render_template('Login.html', form=form, display="block", signup=url_for("signup"))
+            return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"))
+    
+    return render_template('login.html', form=form, wel_display="block", acc_display="none", display="none", signup=url_for("signup"))
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = RegisterForm()
-    return render_template('signup.html', form=form, display="none", login=url_for("login"))
-
-@app.route('/register_success', methods=['GET', 'POST'])
-def success():
     form = RegisterForm()
     if request.method=="POST":
 
@@ -101,13 +96,19 @@ def success():
             clearForm(form)
 
             #Redirect user to the login page
-            return render_template('login.html', form=form, display="none", signup=url_for("signup"))
+            return render_template('login.html', form=form, wel_display="none", acc_display="block", display="none", signup=url_for("signup"))
 
         #If the user email already has an account in the database, reload the page and only clear the email field.
         else:
-            print("An account with this email already exists")
-            form.email.data = ''
-            return render_template('signup.html', form=form, display="none", login=url_for("login"))
+            # print("An account with this email already exists")
+            clearForm(form)
+            return render_template('signup.html', form=form, display="block", login=url_for("login"))
+   
+    return render_template('signup.html', form=form, display="none", login=url_for("login"))
+
+@app.route('/register_success', methods=['GET', 'POST'])
+def success():
+    pass
 			
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])

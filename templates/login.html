@@ -6,7 +6,8 @@
   <a class= "logo-centered" href="/"><img src="{{ url_for('static', filename='images/logo.png') }}"/></a>
   <form method="POST"  action="http://localhost:5000/login">
   <div class="sign-up-header">
-  <h2>Welcome Back</h2>
+  <h2 style="display:{{ wel_display }}">Welcome Back</h2>
+  <h2 style="display:{{ acc_display }}">Account Created!</h2>
   <p>Sign In to track your groceries!</p>
   </div>
 
@@ -27,7 +28,7 @@
   <div class="form-group">
           <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
       </div>
-  <p style="display:{{ display }}" class="invalid_msg"> Invalid username or passsword </p>	  
+  <p style="display:{{ display }}; color:red;" class="invalid_msg"> Invalid username or passsword </p>	  
   <div class="form-group">New Here? <a href="{{signup}}">Create an Account</a></div>
   </form>
 </div>
