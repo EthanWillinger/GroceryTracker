@@ -9,7 +9,7 @@ class LoginForm(FlaskForm):
 
 class RegisterForm(FlaskForm):
     username = StringField("Username", render_kw={"placeholder": "Username"}, validators=[validators.Length(min=3, max=25), validators.DataRequired(message="Please Fill This Field")])
-    email = StringField("Email",render_kw={"placeholder": "Email"}, validators=[validators.Email(message="Please enter a valid email address")])
+    email = StringField("Email",render_kw={"placeholder": "Email"}, validators=[validators.Email(message="Please enter a valid email address"), validators.DataRequired(message="Please Fill This Field")])
     password = PasswordField("Password", render_kw={"placeholder": "Password"}, validators =[
         validators.DataRequired(message="Please Fill This Field"),
         validators.EqualTo(fieldname="confirm", message="Your Passwords Do Not Match")
