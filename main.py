@@ -77,8 +77,6 @@ def signup():
 
         #Check if the email exists in the database already
         email_exists = db.session.query(db.session.query(Users).filter_by(email=form.email.data).exists()).scalar()
-        #Debug Code on next line
-        #print(email_exists)
 
         #If the email is not in the database, process the form and add it to users.db
         if not email_exists:
@@ -106,10 +104,6 @@ def signup():
    
     return render_template('signup.html', form=form, display="none", login=url_for("login"))
 
-@app.route('/register_success', methods=['GET', 'POST'])
-def success():
-    pass
-			
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
