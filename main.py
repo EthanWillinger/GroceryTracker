@@ -50,14 +50,26 @@ def home(user):
     print("home page")
 
 @app.route("/")
-# login page function
+# login page function. The code below until the next comment allows the user to interact with forms.py
 @app.route('/login', methods=['GET', 'POST'])
-#Umair code goes here
 def login():
     form = LoginForm()
-    return render_template('login.html', form=form, display="none", signup=url_for("signup"))
+    if request.method=="POST":
 
-# signup page function
+        email_exists = db.session.query(db.session.query(Users).filter_by(email=form.email.data).exists()).scalar()
+        password_exists = db.session.query(db.session.query(Users).filter_by(password=form.password.data).exists()).scalar()
+
+        if email_exists and password_exists:
+            clearFormLogin(form)
+            #Page will change this is for testing purposes
+            return render_template('intro.html')
+        else:
+            clearFormLogin(form)
+            return render_template('Login.html', form=form, display="block", login=url_for("login"))
+    else:
+        return render_template('Login.html', form=form, display="block", signup=url_for("signup"))
+
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
@@ -93,9 +105,10 @@ def success():
 
         #If the user email already has an account in the database, reload the page and only clear the email field.
         else:
-            flash("An account with this email already exists")
+            print("An account with this email already exists")
             form.email.data = ''
             return render_template('signup.html', form=form, display="none", login=url_for("login"))
+			
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
@@ -124,6 +137,10 @@ def clearForm(form):
     form.password.data = ''
     return form
 
+def clearFormLogin(form):
+    form.email.data = ''
+    form.password.data = ''
+    return form
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")

@@ -21,3 +21,5 @@ class RegisterForm(FlaskForm):
 # Flask Form for the search bar
 class Search_Form(FlaskForm):
     search = StringField('Search')
+
+
