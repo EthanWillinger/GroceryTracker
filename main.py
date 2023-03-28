@@ -16,14 +16,17 @@ from sqlalchemy.sql import text
 # Create a flask app for the website
 app = Flask(__name__) 
 
-#Add Database
+#Add Databases, default initial database is defined in the first line below.
+#Additional databases will be defined in 'SQLALCHEMY_BINDS'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' 
+app.config['SQLALCHEMY_BINDS'] = {'grocery_index' : 'sqlite:///grocery_index.db'}
+
 # Secret key
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 # Initialize The Database
 db = SQLAlchemy(app)
 
-# Create Model
+# Create user accounts table model
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), nullable=False)
@@ -34,10 +37,23 @@ class Users(db.Model):
     def __repr__(self):
         return "<username %r>" % self.username
     
+
+
+# Create grocery index model
+class grocery_index_items(db.Model):
+    __bind_key__ = 'grocery_index'
+    id = db.Column(db.Integer, primary_key=True)
+    Name= db.Column(db.String(), unique=True, nullable=False)
+    ExpirationDate = db.Column(db.String(), nullable = False)
+    StorageType = db.Column(db.String())
+
+    # Create A String
+    def __repr__(self):
+        return "<Name %r>" % self.Name
+
 with app.app_context():
     db.create_all()
 
- 
 
 # The intro page
 @app.route("/intro", methods=['GET', 'POST'])
@@ -106,6 +122,10 @@ def signup():
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
+    #The following is debug code to test
+    #that this code can read from the grocery_index database
+    item_quantity = db.session.query(db.session.query(grocery_index_items).count())
+    print(item_quantity)
     return render_template('gindex.html')
 
 # grocery pantry page function
