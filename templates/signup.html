@@ -3,13 +3,12 @@
 {% block content %}
 
   <div class="signup-form">
+    <a class= "logo-centered" href="/"><img src="{{ url_for('static', filename='images/logo.png') }}"/></a>
     <form method="POST" action="http://localhost:5000/register_success">
+      <div class="sign-up-header">
       <h2>Create an account</h2>
-      <p style="color: green">Please fill in this form to start tracking your groceries!</p>
-      <br>
-      <p style="color: green">Username must be between 3 and 25 characters</p>
-      
-      <hr>
+      <p>Please fill in this form to start tracking your groceries!</p>      
+      </div>
       
     <div class="form-group">
       <div class="input-group">

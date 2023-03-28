@@ -10,15 +10,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='auth.css') }}"> 
-</head>
+
+    <style>
+      body{
+        background: url({{ url_for('static', filename='images/bg.jpg') }});
+      }
+    </style>
+
+  </head>
   <body>
       <!-- Navigation -->
-    <!-- <nav class="navbar navbar-default navbar-custom navbar-fixed-top">-->
-        <!--<div class="container-fluid">
-            <a href="/"><img src="{{url_for('static', filename='logo.png')}}"></a>
-        </div>-->
-    <!-- </nav>-->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            
+        </div>
+    </nav>
 
-      {% block content %}{% endblock %}
+      {% block content %}
+      {% endblock %}
   </body>
 </html>
