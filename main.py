@@ -47,7 +47,7 @@ def intro():
 # Home webpage function
 @app.route("/home", methods=['GET', 'POST'])
 def home(user):
-    print("home page")
+    pass
 
 @app.route("/")
 # login page function. The code below until the next comment allows the user to interact with forms.py
@@ -61,8 +61,7 @@ def login():
 
         if email_exists and password_exists:
             clearFormLogin(form)
-            #Page will change this is for testing purposes
-            return render_template('intro.html')
+            return render_template('gindex.html')
         else:
             clearFormLogin(form)
             return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"))
