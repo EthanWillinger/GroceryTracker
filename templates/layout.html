@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='auth.css') }}"> 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}"> 
 
     <style>
       body{
@@ -22,8 +22,24 @@
       <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container-fluid">
-            
+          <a class= "logo-left" href="{{ gindex}}"><img src="{{ url_for('static', filename='images/logo.png') }}"/></a>
         </div>
+
+        <div class="search__container">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                {% if form.search.errors %}
+                {{ form.search(class="search__input", placeholder="Search a theme") }}
+                <div class="invalid-feedback">
+                    {% for error in form.search.errors%}
+                        <span>{{error}}</span>
+                    {% endfor %}
+                </div>
+          {% else %}
+              {{ form.search(class="search__input", placeholder="Search a theme") }}
+          {% endif %}
+          </form>
+      </div>
     </nav>
 
       {% block content %}

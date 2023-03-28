@@ -21,4 +21,3 @@ class RegisterForm(FlaskForm):
 class Search_Form(FlaskForm):
     search = StringField('Search')
 
-
