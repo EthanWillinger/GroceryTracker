@@ -123,7 +123,6 @@ def signup():
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
-<<<<<<< HEAD
 
     #This array will only contain the name of the grocery items. The rest of the information when
     #when transferring over to the users pantry can be accessed directly from the database. Sticking
@@ -144,13 +143,10 @@ def gindex():
         
 
     print(grocery_items)
-    return render_template('gindex.html')
-=======
     # Search bar functionality
     search_form = Search_Form()
 
     return render_template('gindex.html', gindex=url_for("gindex"), form=search_form)
->>>>>>> 615eabef505835073094e6db16d7065d4f43d816
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
