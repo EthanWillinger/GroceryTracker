@@ -109,18 +109,21 @@ def signup():
 def gindex():
     # Search bar functionality
     search_form = Search_Form()
-
-    return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account") form=search_form)
+    return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form)
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
 def gpantry():
-    return render_template('gpantry.html')
+    # Search bar functionality
+    search_form = Search_Form()
+    return render_template('gpantry.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form)
 
 # user account page function
 @app.route('/account', methods=['GET', 'POST'])
 def account():
-    return render_template('account.html')
+    # Search bar functionality
+    search_form = Search_Form()
+    return render_template('account.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form)
 
 # logout function
 @app.route('/logout')
