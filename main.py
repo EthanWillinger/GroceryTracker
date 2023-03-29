@@ -65,7 +65,7 @@ def intro():
 def home(user):
     print("home page")
 
-@app.route("/")
+#@app.route("/")
 # login page function. The code below until the next comment allows the user to interact with forms.py
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -76,8 +76,8 @@ def login():
 
         if email_exists and password_exists:
             clearFormLogin(form)
-            #Page will change this is for testing purposes
-            return render_template('intro.html')
+            # return render_template('gindex.html')
+            return gindex()
         else:
             clearFormLogin(form)
             return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"))
@@ -119,9 +119,11 @@ def signup():
    
     return render_template('signup.html', form=form, display="none", login=url_for("login"))
 
+@app.route("/")
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
+<<<<<<< HEAD
 
     #This array will only contain the name of the grocery items. The rest of the information when
     #when transferring over to the users pantry can be accessed directly from the database. Sticking
@@ -143,6 +145,12 @@ def gindex():
 
     print(grocery_items)
     return render_template('gindex.html')
+=======
+    # Search bar functionality
+    search_form = Search_Form()
+
+    return render_template('gindex.html', gindex=url_for("gindex"), form=search_form)
+>>>>>>> 615eabef505835073094e6db16d7065d4f43d816
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
