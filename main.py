@@ -10,7 +10,7 @@ from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import MySQLdb
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import text
+from sqlalchemy.sql import text, select
 
 
 # Create a flask app for the website
@@ -122,10 +122,26 @@ def signup():
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
-    #The following is debug code to test
-    #that this code can read from the grocery_index database
-    item_quantity = db.session.query(db.session.query(grocery_index_items).count())
-    print(item_quantity)
+
+    #This array will only contain the name of the grocery items. The rest of the information when
+    #when transferring over to the users pantry can be accessed directly from the database. Sticking
+    #to only names will improve performance over converting the queries to their own bespoke objects
+    grocery_items = []
+
+    #returns SELECT ##, the strip function will then return only the numeric quantity as an integer. This will be used
+    #for the grocery_items loading loop
+    item_quantity = str(db.session.query(db.session.query(grocery_index_items).count()))
+    item_quantity = int(item_quantity.strip("SELECT "))
+
+    #load the grocery_items array with the name of each grocery item in
+    #grocery_index.db
+    for i in range(1, item_quantity + 1):
+        item = db.session.query(grocery_index_items).filter(grocery_index_items.id == i).first()
+        item = item.Name
+        grocery_items.append(item)
+        
+
+    print(grocery_items)
     return render_template('gindex.html')
 
 # grocery pantry page function
