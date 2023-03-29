@@ -110,7 +110,7 @@ def gindex():
     # Search bar functionality
     search_form = Search_Form()
 
-    return render_template('gindex.html', gindex=url_for("gindex"), form=search_form)
+    return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account") form=search_form)
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
