@@ -176,5 +176,21 @@ def clearFormLogin(form):
     form.password.data = ''
     return form
 
+#This returns a boolean based on if search_term exists inside food_index
+def search(food_index, search_term):
+    #Boolean for whether the object is in the food_index array, start on
+    #False by default
+    exists = False
+
+    #Code that scans the array goes here
+
+    
+
+    return exists
+
+
+    
+
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
