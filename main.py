@@ -109,7 +109,9 @@ def signup():
 def gindex():
     # Search bar functionality
     search_form = Search_Form()
-    return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form)
+    grocery_index = ['Eggs','WhiteBread', 'WheatBread','Eggs','WhiteBread', 'WheatBread'] + ['Eggs','WhiteBread', 'WheatBread','Eggs','WhiteBread', 'WheatBread']
+    return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+                           account=url_for("account"), form=search_form, groceries=grocery_index)
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])

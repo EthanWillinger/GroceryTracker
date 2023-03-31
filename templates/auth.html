@@ -11,14 +11,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='auth.css') }}"> 
 
-    <style>
-      body{
-        background: url({{ url_for('static', filename='images/bg.jpg') }});
-      }
-    </style>
-
   </head>
-  <body>
+  <body style="background: url({{ url_for('static', filename='images/bg.jpg') }});">
       <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container-fluid">

@@ -9,6 +9,7 @@
     font-family: 'Merienda', Helvetica, sans-serif;
     display: inline-block;
     padding-top: 2vh;
+    color:white;
 }
 .navbar{
     background: transparent;
@@ -51,7 +52,7 @@ nav a.active {
     height: 10%;
     text-align: center;
     margin-top: 3vh;
-    margin-left: 3vw;
+    margin-left: 5vw;
     margin-right: 3vw;
     float: left;
 }
@@ -109,22 +110,52 @@ nav a.active {
     display: inline-block; 
     margin-top:3vh;
     margin-bottom: 2vh;
+    color: white;
 }
 .container-fluid li{
     float: left;
     text-decoration: none;
     height: 100%;
     width: 33.3%;
-    color: #308eab;
 }
 .container-fluid li p{
     font-size: small;
     color: black;
-    font-weight: 500;
+    font-weight: 600;
 }
 .container-fluid i{
     font-size: 3.5em;
     
+}
+
+#grocery_list{
+    margin:30vh auto;
+    background-color: red;
+    width: 80%;
+
+}
+.grocery_container{
+    background-color: blue;
+    width:80%;
+    height: auto;
+    padding-top:5vh;
+    column-count: 3;
+    list-style: none;
+    margin: auto 10em;
+}
+.grocery_item{
+    width:60%;
+    height:12em;
+    text-align: center;
+    margin-bottom: 3vh;
+    border-radius:  10%;
+    background-color: white;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+}
+.item_img{
+    width:60%;
+    height:50%;
 }
 
 /* Add responsiveness - on screens less than 580px wide, display the navbar vertically instead of horizontally */
@@ -185,8 +216,7 @@ nav a.active {
         
     .search__input {
         width: 100%;
-        padding: 12px 24px;
-    
+        padding: 12px 24px;    
         background-color: transparent;
         transition: transform 250ms ease-in-out;
         font-size: 14px;
@@ -246,4 +276,19 @@ nav a.active {
     .container-fluid i{
         font-size: 3.5em;
     }
-}
+    #grocery_list{
+        margin:55vh 10vw;
+    }
+    .grocery_container{
+        width:100%;
+        column-count: 1;
+        list-style: none;
+    }
+    .grocery_item{
+        height:200px;
+        text-align: center;
+    }
+    .item_img{
+        width:60%;
+        height:50%;
+    }
