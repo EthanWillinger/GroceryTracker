@@ -130,12 +130,10 @@ nav a.active {
 
 #grocery_list{
     margin:30vh auto;
-    background-color: red;
     width: 80%;
 
 }
 .grocery_container{
-    background-color: blue;
     width:80%;
     height: auto;
     padding-top:5vh;
