@@ -36,7 +36,10 @@ class Users(db.Model):
     # Create A String
     def __repr__(self):
         return "<username %r>" % self.username
-    
+
+# Create user accounts table model
+# This table will store all the items for all users, table will have a primary key for each record
+# but will have a foreign key defining the user
 
 
 # Create grocery index model
@@ -176,21 +179,24 @@ def clearFormLogin(form):
     form.password.data = ''
     return form
 
+
 #This returns a boolean based on if search_term exists inside food_index
-def search(food_index, search_term):
+def search(search_item, search_arr):
     #Boolean for whether the object is in the food_index array, start on
     #False by default
     exists = False
 
     #Code that scans the array goes here
-
-    
+    for item in search_arr:
+        if item == search_item:
+            exists = True
+            return exists
+        else:
+            continue
 
     return exists
 
-
     
-
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
