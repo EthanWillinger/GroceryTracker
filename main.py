@@ -148,18 +148,23 @@ def gindex():
     print(grocery_items)
     # Search bar functionality
     search_form = Search_Form()
-
-    return render_template('gindex.html', gindex=url_for("gindex"), form=search_form)
+    grocery_index = ['Eggs','WhiteBread', 'WheatBread','Eggs','WhiteBread', 'WheatBread'] + ['Eggs','WhiteBread', 'WheatBread','Eggs','WhiteBread', 'WheatBread']
+    return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+                           account=url_for("account"), form=search_form, groceries=grocery_index)
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
 def gpantry():
-    return render_template('gpantry.html')
+    # Search bar functionality
+    search_form = Search_Form()
+    return render_template('gpantry.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form)
 
 # user account page function
 @app.route('/account', methods=['GET', 'POST'])
 def account():
-    return render_template('account.html')
+    # Search bar functionality
+    search_form = Search_Form()
+    return render_template('account.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form)
 
 # logout function
 @app.route('/logout')
