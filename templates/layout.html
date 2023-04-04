@@ -22,7 +22,7 @@
         </li>
 
         <li class="search__container">
-            <form method="POST" action="">
+            <form method="POST" action="http://localhost:5000/gindex">
                 {{ form.hidden_tag() }}
                 {% if form.search.errors %}
                 {{ form.search(class="search__input", placeholder="Search a theme") }}

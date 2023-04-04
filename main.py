@@ -126,7 +126,8 @@ def signup():
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
-
+    form = Search_Form()
+    
     #This array will only contain the name of the grocery items. The rest of the information when
     #when transferring over to the users pantry can be accessed directly from the database. Sticking
     #to only names will improve performance over converting the queries to their own bespoke objects
@@ -143,14 +144,17 @@ def gindex():
         item = db.session.query(grocery_index_items).filter(grocery_index_items.id == i).first()
         item = item.Name
         grocery_items.append(item)
-        
 
-    print(grocery_items)
-    # Search bar functionality
-    search_form = Search_Form()
-    grocery_index = ['Eggs','WhiteBread', 'WheatBread','Eggs','WhiteBread', 'WheatBread'] + ['Eggs','WhiteBread', 'WheatBread','Eggs','WhiteBread', 'WheatBread']
-    return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
-                           account=url_for("account"), form=search_form, groceries=grocery_index)
+        
+    if request.method=="POST":
+        grocery_items = find_item(form.search, grocery_items)
+        form.search = ''
+        render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+                           account=url_for("account"), form=form, groceries=grocery_items)
+        
+    else:
+        return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+                            account=url_for("account"), form=form, groceries=grocery_items)
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
@@ -186,7 +190,7 @@ def clearFormLogin(form):
 
 
 #This returns a boolean based on if search_term exists inside food_index
-def search(search_item, search_arr):
+def find_item(search_item, search_arr):
     #Boolean for whether the object is in the food_index array, start on
     #False by default
     exists = False
@@ -194,12 +198,11 @@ def search(search_item, search_arr):
     #Code that scans the array goes here
     for item in search_arr:
         if item == search_item:
-            exists = True
-            return exists
+            return item
         else:
             continue
 
-    return exists
+    return search_arr
 
     
 
