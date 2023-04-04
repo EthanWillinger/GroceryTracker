@@ -128,24 +128,17 @@ def signup():
 def gindex():
     form = Search_Form()
     
-    #This array will only contain the name of the grocery items. The rest of the information when
-    #when transferring over to the users pantry can be accessed directly from the database. Sticking
-    #to only names will improve performance over converting the queries to their own bespoke objects
+    #Build starting grocery_items list
     grocery_items = []
-
-    #returns SELECT ##, the strip function will then return only the numeric quantity as an integer. This will be used
-    #for the grocery_items loading loop
     item_quantity = str(db.session.query(db.session.query(grocery_index_items).count()))
     item_quantity = int(item_quantity.strip("SELECT "))
 
-    #load the grocery_items array with the name of each grocery item in
-    #grocery_index.db
     for i in range(1, item_quantity + 1):
         item = db.session.query(grocery_index_items).filter(grocery_index_items.id == i).first()
         item = item.Name
         grocery_items.append(item)
 
-        
+
     if request.method=="POST":
         grocery_items = find_item(form.search, grocery_items)
         form.search = ''
@@ -189,16 +182,15 @@ def clearFormLogin(form):
     return form
 
 
-#This returns a boolean based on if search_term exists inside food_index
+#This returns an array based on if search_term exists inside search_arr
 def find_item(search_item, search_arr):
-    #Boolean for whether the object is in the food_index array, start on
-    #False by default
-    exists = False
-
+    
     #Code that scans the array goes here
     for item in search_arr:
         if item == search_item:
-            return item
+            search_arr = []
+            search_arr.append(item)
+            return search_arr
         else:
             continue
 
