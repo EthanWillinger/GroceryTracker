@@ -1,5 +1,6 @@
 import os
 import secrets
+import MySQLdb
 import requests
 from forms import Search_Form, LoginForm, RegisterForm
 from flask import session, request
@@ -8,7 +9,6 @@ from flask import url_for, flash, redirect
 from flask_login import LoginManager, UserMixin, login_user
 from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-import MySQLdb
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text, select
 
@@ -57,6 +57,8 @@ class grocery_index_items(db.Model):
 with app.app_context():
     db.create_all()
 
+def addToPantry(item):
+    pass
 
 # The intro page
 @app.route("/intro", methods=['GET', 'POST'])
@@ -138,16 +140,24 @@ def gindex():
         item = item.Name
         grocery_items.append(item)
 
-
-    if request.method=="POST":
-        grocery_items = find_item(form.search, grocery_items)
-        form.search = ''
-        render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
-                           account=url_for("account"), form=form, groceries=grocery_items)
-        
-    else:
-        return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+   
+    # Search bar
+    if request.method == "POST":
+        Search_Term = request.form.get('search')
+        if Search_Term != None:
+            print("yeyey")
+            grocery_items = find_item(Search_Term, grocery_items)
+            return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
                             account=url_for("account"), form=form, groceries=grocery_items)
+        else:
+            # add to pantry
+            # pass count var into html
+            return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+                        account=url_for("account"), form=form, groceries=grocery_items)
+
+        
+    return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+                        account=url_for("account"), form=form, groceries=grocery_items)
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
@@ -184,17 +194,15 @@ def clearFormLogin(form):
 
 #This returns an array based on if search_term exists inside search_arr
 def find_item(search_item, search_arr):
-    
-    #Code that scans the array goes here
-    for item in search_arr:
-        if item == search_item:
-            search_arr = []
-            search_arr.append(item)
-            return search_arr
-        else:
-            continue
+    results = []
 
-    return search_arr
+    # search for all occurences of the search term within each grocery
+    for item in search_arr:
+        if search_item.lower() in item.lower() or item.lower() in search_item.lower():
+            results.append(item)
+
+
+    return results
 
     
 

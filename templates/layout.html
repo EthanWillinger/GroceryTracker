@@ -14,6 +14,7 @@
 
   </head>
   <body style="background: url({{ url_for('static', filename='images/bg.jpg') }});">
+
       <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
        <ul>
@@ -53,14 +54,14 @@
           <p> Hmm, no results for that </p>
       </div>
       {% else %}
-          <form method="POST" action="" id="grocery_list">
+          <form method="POST" action="http://localhost:5000/gindex" id="grocery_list">
               <ul class="grocery_container">
                   {% for item in groceries %} 
                       <li class="grocery_item">
                               <img class="item_img item" src="static/images/{{ item }}.png" alt="an image of a/an {{ item }}">
                               <p class="desc">{{ item }}</p>
                               <button class="incr edit" type="submit" name="increment">+</button>
-                              <button class="incr edit" type="submit" name="increment">-</button>
+                              <button class="incr edit" type="submit" name="decrement">-</button>
                       </li>
                   {% endfor %}
               </ul>
