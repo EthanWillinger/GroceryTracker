@@ -10,8 +10,26 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}"> 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 
+            <!--Jquery Cdn -->
+        <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+        crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+    $(document).on('click','incr',function(e)
+            {
+                e.preventDefault();
+                $.ajax({
+                    type:'POST',
+                    url:'{{ gindex }}',
+                    data:{
+                    increment:$(".incr").val()
+                        },
+                    })
+            });
+    </script>
   </head>
   <body style="background: url({{ url_for('static', filename='images/bg.jpg') }});">
 
@@ -23,7 +41,7 @@
         </li>
 
         <li class="search__container">
-            <form method="POST" action="http://localhost:5000/gindex">
+            <form method="POST" action="{{ gindex }}">
                 {{ form.hidden_tag() }}
                 {% if form.search.errors %}
                 {{ form.search(class="search__input", placeholder="Search a theme") }}
@@ -54,14 +72,15 @@
           <p> Hmm, no results for that </p>
       </div>
       {% else %}
-          <form method="POST" action="http://localhost:5000/gindex" id="grocery_list">
+          <form method="POST" action="{{ gindex }}" id="grocery_list">
               <ul class="grocery_container">
                   {% for item in groceries %} 
                       <li class="grocery_item">
                               <img class="item_img item" src="static/images/{{ item }}.png" alt="an image of a/an {{ item }}">
                               <p class="desc">{{ item }}</p>
-                              <button class="incr edit" type="submit" name="increment">+</button>
-                              <button class="incr edit" type="submit" name="decrement">-</button>
+                              <button class="incr edit" type="submit" name="increment" value="{{ item }}">+</button>
+                              <p name="count_var" id="count_var">{{ count[ loop.index0 ] }}</p>
+                              <button class="decr edit" type="submit" name="decrement" value="{{ item }}">-</button>
                       </li>
                   {% endfor %}
               </ul>
