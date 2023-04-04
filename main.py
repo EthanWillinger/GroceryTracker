@@ -10,20 +10,23 @@ from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import MySQLdb
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import text
+from sqlalchemy.sql import text, select
 
 
 # Create a flask app for the website
 app = Flask(__name__) 
 
-#Add Database
+#Add Databases, default initial database is defined in the first line below.
+#Additional databases will be defined in 'SQLALCHEMY_BINDS'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' 
+app.config['SQLALCHEMY_BINDS'] = {'grocery_index' : 'sqlite:///grocery_index.db'}
+
 # Secret key
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 # Initialize The Database
 db = SQLAlchemy(app)
 
-# Create Model
+# Create user accounts table model
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), nullable=False)
@@ -33,11 +36,27 @@ class Users(db.Model):
     # Create A String
     def __repr__(self):
         return "<username %r>" % self.username
-    
+
+# Create user accounts table model
+# This table will store all the items for all users, table will have a primary key for each record
+# but will have a foreign key defining the user
+
+
+# Create grocery index model
+class grocery_index_items(db.Model):
+    __bind_key__ = 'grocery_index'
+    id = db.Column(db.Integer, primary_key=True)
+    Name= db.Column(db.String(), unique=True, nullable=False)
+    ExpirationDate = db.Column(db.String(), nullable = False)
+    StorageType = db.Column(db.String())
+
+    # Create A String
+    def __repr__(self):
+        return "<Name %r>" % self.Name
+
 with app.app_context():
     db.create_all()
 
- 
 
 # The intro page
 @app.route("/intro", methods=['GET', 'POST'])
@@ -107,11 +126,28 @@ def signup():
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
-    # Search bar functionality
-    search_form = Search_Form()
-    grocery_index = ['Eggs','WhiteBread', 'WheatBread','Eggs','WhiteBread', 'WheatBread'] + ['Eggs','WhiteBread', 'WheatBread','Eggs','WhiteBread', 'WheatBread']
-    return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
-                           account=url_for("account"), form=search_form, groceries=grocery_index)
+    form = Search_Form()
+    
+    #Build starting grocery_items list
+    grocery_items = []
+    item_quantity = str(db.session.query(db.session.query(grocery_index_items).count()))
+    item_quantity = int(item_quantity.strip("SELECT "))
+
+    for i in range(1, item_quantity + 1):
+        item = db.session.query(grocery_index_items).filter(grocery_index_items.id == i).first()
+        item = item.Name
+        grocery_items.append(item)
+
+
+    if request.method=="POST":
+        grocery_items = find_item(form.search, grocery_items)
+        form.search = ''
+        render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+                           account=url_for("account"), form=form, groceries=grocery_items)
+        
+    else:
+        return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+                            account=url_for("account"), form=form, groceries=grocery_items)
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
@@ -144,6 +180,23 @@ def clearFormLogin(form):
     form.email.data = ''
     form.password.data = ''
     return form
+
+
+#This returns an array based on if search_term exists inside search_arr
+def find_item(search_item, search_arr):
+    
+    #Code that scans the array goes here
+    for item in search_arr:
+        if item == search_item:
+            search_arr = []
+            search_arr.append(item)
+            return search_arr
+        else:
+            continue
+
+    return search_arr
+
+    
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
