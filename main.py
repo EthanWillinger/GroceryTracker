@@ -48,14 +48,33 @@ class grocery_index_items(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     Name= db.Column(db.String(), unique=True, nullable=False)
     ExpirationDate = db.Column(db.String(), nullable = False)
-    StorageType = db.Column(db.String())
+    StorageType = db.Column(db.String())    
 
     # Create A String
     def __repr__(self):
         return "<Name %r>" % self.Name
 
+# Create model for every user's groceries    
+class user_pantry_items(db.Model):
+    __bind_key__ = 'grocery_index'
+    entry_id = db.Column(db.Integer, primary_key=True)
+    item_id = db.Column(db.Integer, db.ForeignKey('grocery_index_items.id'))
+    user_id = db.Column(db.Integer, nullable=False)
+    quantity = db.Column(db.Integer)
+    expiration_date = db.Column(db.String, nullable = False)
+    item_name = db.Column(db.String, db.ForeignKey('grocery_index_items.Name'))
+
+    # Create A String
+    def __repr__(self):
+        return "<entry_id %r>" % self.entry_id
+
+
 with app.app_context():
     db.create_all()
+
+#This will be filled with a value upon login, the program will use this to access items in the pantry database
+#that are exclusive to this user
+session_user_email = ''
 
 def addToPantry(item):
     pass
@@ -92,7 +111,7 @@ def intro():
 def home(user):
     print("home page")
 
-#@app.route("/")
+@app.route("/")
 # login page function. The code below until the next comment allows the user to interact with forms.py
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -102,6 +121,8 @@ def login():
         password_exists = db.session.query(db.session.query(Users).filter_by(password=form.password.data).exists()).scalar()
 
         if email_exists and password_exists:
+            session_user_email = form.email.data
+            print(session_user_email)
             clearFormLogin(form)
             # return render_template('gindex.html')
             return gindex()
@@ -146,7 +167,6 @@ def signup():
    
     return render_template('signup.html', form=form, display="none", login=url_for("login"))
 
-@app.route("/")
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
