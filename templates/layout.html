@@ -18,7 +18,7 @@
         crossorigin="anonymous"></script>
 
     <script type="text/javascript">
-    $(document).on('click','incr',function(e)
+    $("button").on('click',function(e)
             {
                 e.preventDefault();
                 $.ajax({
@@ -26,7 +26,18 @@
                     url:'{{ gindex }}',
                     data:{
                     increment:$(".incr").val()
-                        },
+                        }
+                    })
+            });
+    $("button").on('click',function(e)
+            {
+                e.preventDefault();
+                $.ajax({
+                    type:'POST',
+                    url:'{{ gindex }}',
+                    data:{
+                    decrement:$(".decr").val()
+                        }
                     })
             });
     </script>
@@ -76,11 +87,11 @@
               <ul class="grocery_container">
                   {% for item in groceries %} 
                       <li class="grocery_item">
-                              <img class="item_img item" src="static/images/{{ item }}.png" alt="an image of a/an {{ item }}">
+                              <img class="item_img item" src="static/images/foods/{{ item }}.png" alt="an image of a/an {{ item }}">
                               <p class="desc">{{ item }}</p>
-                              <button class="incr edit" type="submit" name="increment" value="{{ item }}">+</button>
-                              <p name="count_var" id="count_var">{{ count[ loop.index0 ] }}</p>
-                              <button class="decr edit" type="submit" name="decrement" value="{{ item }}">-</button>
+                              <button class="incr edit" name="increment{{loop.index0}}" value="{{ item }}">+</button>
+                              <p name="count_var" class="count_var">{{ count[ loop.index0 ] }}</p>
+                              <button class="decr edit" name="decrement{{loop.index0}}" value="{{ item }}">-</button>
                       </li>
                   {% endfor %}
               </ul>

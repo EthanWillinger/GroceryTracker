@@ -74,10 +74,12 @@ def getIndex():
 
 def incrInPantry(item):
     # incr grocery count in pantry
+    print(item)
     pass
 
 def decrInPantry(item):
     # decr grocery count in pantry
+    print(item)
     pass
 
 # The intro page
