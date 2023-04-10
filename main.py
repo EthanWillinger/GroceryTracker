@@ -75,8 +75,15 @@ with app.app_context():
 #that are exclusive to this user
 session_user_email = ''
 
-def addToPantry(item):
-    pass
+def addToPantry(user_email, grocery_item):
+    #Object that we will be placing in our add query
+    item = user_pantry_items(user_id=user_email, quantity = 1, expiration_date = "test", item_name=grocery_item)
+
+    #Add to database
+    db.session.add(item)
+
+    #finalize this action
+    db.session.commit()
 
 def getIndex():
     #Build starting grocery_items list
@@ -90,30 +97,24 @@ def getIndex():
         grocery_items.append(item)
     return grocery_items
 
+
 def incrInPantry(user_email, grocery_item):
     item_exists = db.session.query(db.session.query(user_pantry_items).filter_by(user_id =user_email, item_name = grocery_item).exists()).scalar()
     if not item_exists:
-
-            #Object that we will be placing in our add query
-            item = user_pantry_items(user_id=user_email, quantity = 1, expiration_date = "test", item_name=grocery_item)
-
-            #Add to database
-            db.session.add(item)
-
-            #finalize this action
-            db.session.commit()
+        addToPantry(user_email, grocery_item)
+    
     else:
-         
-         item = db.session.query(grocery_index_items).filter(grocery_index_items.Name == grocery_item).first()
+         item = db.session.query(user_pantry_items).filter(user_pantry_items.item_name == grocery_item, user_pantry_items.user_id == user_email).first()
          food_shelf_life = item.expiration_date
          setattr(item, 'quantity', user_pantry_items.quantity+1)
          setattr(item, 'expiration_date', calculate_expiration_date(food_shelf_life))
 
-def decrInPantry(item):
-    # decr grocery count in pantry
-    print(item)
-    pass
+def decrInPantry(user_email, grocery_item):
+            item = db.session.query(user_pantry_items).filter(user_pantry_items.item_name == grocery_item, user_pantry_items.user_id == user_email).first()
 
+            if item.quantity > 0:
+                setattr(item, 'quantity', user_pantry_items.quantity-1)
+    
 # The intro page
 @app.route("/intro", methods=['GET', 'POST'])
 def intro():
