@@ -58,10 +58,9 @@ class grocery_index_items(db.Model):
 class user_pantry_items(db.Model):
     __bind_key__ = 'grocery_index'
     entry_id = db.Column(db.Integer, primary_key=True)
-    item_id = db.Column(db.Integer, db.ForeignKey('grocery_index_items.id'))
     user_id = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer)
-    expiration_date = db.Column(db.String, nullable = False)
+    expiration_date = db.Column(db.Integer, nullable = False)
     item_name = db.Column(db.String, db.ForeignKey('grocery_index_items.Name'))
 
     # Create A String
@@ -91,10 +90,24 @@ def getIndex():
         grocery_items.append(item)
     return grocery_items
 
-def incrInPantry(item):
-    # incr grocery count in pantry
-    print(item)
-    pass
+def incrInPantry(user_email, grocery_item):
+    item_exists = db.session.query(db.session.query(user_pantry_items).filter_by(user_id =user_email, item_name = grocery_item).exists()).scalar()
+    if not item_exists:
+
+            #Object that we will be placing in our add query
+            item = user_pantry_items(user_id=user_email, quantity = 1, expiration_date = "test", item_name=grocery_item)
+
+            #Add to database
+            db.session.add(item)
+
+            #finalize this action
+            db.session.commit()
+    else:
+         
+         item = db.session.query(grocery_index_items).filter(grocery_index_items.Name == grocery_item).first()
+         food_shelf_life = item.expiration_date
+         setattr(item, 'quantity', user_pantry_items.quantity+1)
+         setattr(item, 'expiration_date', calculate_expiration_date(food_shelf_life))
 
 def decrInPantry(item):
     # decr grocery count in pantry
@@ -248,6 +261,28 @@ def find_item(search_item, search_arr):
 
 
     return results
+        
+
+#Calculate the days remaining on a selected food item, return the days_remaining
+#UNDER CONSTRUCTION
+def calculate_expiration_date(shelf_life):
+
+    days_remaining = 0
+    digit_in_shelf_life = int("".join(filter(str.isdigit, shelf_life)))
+
+    if 'months' or 'month' in shelf_life:
+        days_remaining = digit_in_shelf_life * 30
+
+    elif 'weeks' or 'week' in shelf_life:
+        days_remaining = digit_in_shelf_life * 7
+
+    elif 'years' or 'year' in shelf_life:
+        days_remaining = digit_in_shelf_life * 365
+
+    else:
+        days_remaining = digit_in_shelf_life
+
+    return days_remaining
 
     
 
