@@ -61,7 +61,7 @@ class user_pantry_items(db.Model):
     user_id = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer)
     expiration_date = db.Column(db.Integer, nullable = False)
-    item_name = db.Column(db.String, db.ForeignKey('grocery_index_items.Name'))
+    item_name = db.Column(db.String)
 
     # Create A String
     def __repr__(self):
@@ -135,8 +135,8 @@ def login():
         password_exists = db.session.query(db.session.query(Users).filter_by(password=form.password.data).exists()).scalar()
 
         if email_exists and password_exists:
+            global session_user_email
             session_user_email = form.email.data
-            print(session_user_email)
             clearFormLogin(form)
             # return render_template('gindex.html')
             return gindex()
@@ -221,8 +221,8 @@ def gindex():
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
 def gpantry():
-    # Search bar functionality
     search_form = Search_Form()
+    load_user_pantry(session_user_email)
     return render_template('gpantry.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form)
 
 # user account page function
@@ -265,7 +265,6 @@ def find_item(search_item, search_arr):
         
 
 #Calculate the days remaining on a selected food item, return the days_remaining
-#UNDER CONSTRUCTION
 def calculate_expiration_date(shelf_life):
 
     days_remaining = 0
@@ -285,7 +284,35 @@ def calculate_expiration_date(shelf_life):
 
     return days_remaining
 
+#This function will do the following
+
+#1. Perform a query on the user_pantry_items table that only selects entries
+#   with the user_id matching the "users_email" argument. Save this to a variable
+
+#2. Create a class that will store the name, shelf life, and quantity of a given pantry record
+
+#3. For each record in the collection of records (items), create an instance of "food" and provide
+#   it with the records item_name, expiration_date, and quantity save it to variable called food_item
+
+#4. Add "food_item" to the user_items array
+#
+#5. Return user_items. This array of food objects will be used to display the name, quantity and to calculate
+#   the days remaining on the item
+def load_user_pantry(users_email):
+    user_items = []
     
+    items = db.session.query(user_pantry_items).filter(user_pantry_items.user_id == users_email).all()
+
+    class food:
+        def __init__(self,name,shelf_life, quantity):
+            self.name = name
+            self.shelf_life = shelf_life
+            self.quantity = quantity
+
+    for item in items:
+        food_item = food(item.item_name, item.expiration_date, item.quantity)
+        user_items.append(food_item)
+        print(user_items)
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
