@@ -27,7 +27,7 @@ app.config['SECRET_KEY'] = secrets.token_hex(16)
 db = SQLAlchemy(app)
 
 # Create user accounts table model
-class Users(db.Model):
+class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(), nullable=False, unique=True)
@@ -82,6 +82,7 @@ def decrInPantry(item):
     print(item)
     pass
 
+
 # The intro page
 @app.route("/intro", methods=['GET', 'POST'])
 def intro():
@@ -92,22 +93,28 @@ def intro():
 def home(user):
     print("home page")
 
-#@app.route("/")
+@app.route("/")
 # login page function. The code below until the next comment allows the user to interact with forms.py
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if request.method=="POST":
         email_exists = db.session.query(db.session.query(Users).filter_by(email=form.email.data).exists()).scalar()
-        password_exists = db.session.query(db.session.query(Users).filter_by(password=form.password.data).exists()).scalar()
 
-        if email_exists and password_exists:
-            clearFormLogin(form)
-            # return render_template('gindex.html')
-            return gindex()
+        if email_exists:
+
+            # check if password matches
+            user_login = db.session.query(Users).filter_by(email=form.email.data).first()
+            if check_password_hash(user_login.password, form.password.data):
+                print("yes")
+                clearFormLogin(form)
+                # return render_template('gindex.html')
+                return gindex()
+            else:
+                  return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), signup=url_for("signup"))
         else:
             clearFormLogin(form)
-            return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"))
+            return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), signup=url_for("signup"))
     
     return render_template('login.html', form=form, wel_display="block", acc_display="none", display="none", signup=url_for("signup"))
 
@@ -124,7 +131,7 @@ def signup():
         if not email_exists:
 
             #Object that we will be placing in our add query
-            user = Users(username=form.username.data, email=form.email.data, password=form.password.data)
+            user = Users(username=form.username.data, email=form.email.data, password=generate_password_hash(form.password.data))
 
             #Add to database
             db.session.add(user)
@@ -134,6 +141,7 @@ def signup():
 
             #Clear all Registration form fields for future use
             clearForm(form)
+            form = LoginForm()
 
             #Redirect user to the login page
             return render_template('login.html', form=form, wel_display="none", acc_display="block", display="none", signup=url_for("signup"))
@@ -146,7 +154,7 @@ def signup():
    
     return render_template('signup.html', form=form, display="none", login=url_for("login"))
 
-@app.route("/")
+#@app.route("/")
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
 def gindex():
