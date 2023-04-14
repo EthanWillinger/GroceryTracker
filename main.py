@@ -290,8 +290,8 @@ def gindex():
     grocery_items = getIndex()
     count_list = get_quantity(grocery_items, user_id)
 
-    # Search bar
     if request.method == "POST":
+         # Search bar
         Search_Term = request.form.get('search')
         if Search_Term != None:
             grocery_items = find_item(Search_Term, grocery_items)
@@ -301,13 +301,13 @@ def gindex():
                 count_list = get_quantity(grocery_items, user_id)
 
 
-            return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+            return render_template('gindex.html', current_page= url_for("gindex"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
                             account=url_for("account"), form=form, groceries=grocery_items, count = count_list, logout=url_for("logout"))
         elif Search_Term == " ":
             grocery_items = getIndex()
              # get the frequency of each item in the user's pantry
             count_list = get_quantity(grocery_items, user_id)
-            return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+            return render_template('gindex.html', current_page= url_for("gindex"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
                                 account=url_for("account"), form=form, groceries=grocery_items, count = count_list, logout=url_for("logout"))
 
         if "increment" in request.form:
@@ -328,22 +328,62 @@ def gindex():
                 return redirect(url_for('login'))
 
 
-    return render_template('gindex.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+    return render_template('gindex.html', current_page= url_for("gindex"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
                         account=url_for("account"), form=form, groceries=grocery_items, count = count_list, logout=url_for("logout"))
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
 @login_required
 def gpantry():
-    search_form = Search_Form()
+    form = Search_Form()
     user_id = session.get('user_id')
     #temporary format
     groceries = load_user_pantry(user_id)
     grocery_names = [i.name for i in groceries]
     count_list = [i.quantity for i in groceries]
 
+    if request.method == "POST":
+         # Search bar
+        Search_Term = request.form.get('search')
+        if Search_Term != None:
+            grocery_items = find_item(Search_Term, grocery_names)
+            #if there are no results for the search, returns -1
+            if grocery_items != -1:
+                # get the frequency of each item in the user's pantry
+                # temporary format
+                count_list = [i.quantity for i in groceries if i.name == grocery_names]
+
+
+            return render_template('gpantry.html', current_page= url_for("gpantry"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+                            account=url_for("account"), form=form, groceries=grocery_names, count = count_list, logout=url_for("logout"))
+        elif Search_Term == " ":
+            # get the frequency of each item in the user's pantry
+            #temporary format
+            grocery_names = [i.name for i in groceries]
+            count_list = [i.quantity for i in groceries]
+            return render_template('gpantry.html', current_page= url_for("gpantry"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
+                                account=url_for("account"), form=form, groceries=grocery_names, count = count_list, logout=url_for("logout"))
+
+        if "increment" in request.form:
+            # increase the grocery count in the user's pantry
+            print(user_id)
+            
+            if user_id != "":
+                incrInPantry(user_id, request.form.get("increment"))
+                count_list = get_quantity(grocery_names, user_id)
+            else:
+                return redirect(url_for('login'))
+
+        if "decrement" in request.form:
+            # decrease the grocery count in the user's pantry
+            if user_id != "":
+                decrInPantry(user_id, request.form.get("decrement"))
+                count_list = get_quantity(grocery_names, user_id)
+            else:
+                return redirect(url_for('login'))
+
     
-    return render_template('gpantry.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form, count = count_list, groceries=grocery_names, logout=url_for("logout"))
+    return render_template('gpantry.html', current_page=url_for("gpantry"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=form, count = count_list, groceries=grocery_names, logout=url_for("logout"))
 
 # user account page function
 @app.route('/account', methods=['GET', 'POST'])
@@ -408,7 +448,6 @@ def load_user_pantry(users_email):
     user_items = []
     
     items = db.session.query(pantry).filter(pantry.user_id == users_email).all()
-    print(items)
 
     class food:
         def __init__(self,name,shelf_life, quantity):

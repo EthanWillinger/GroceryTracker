@@ -84,7 +84,7 @@
           <p> Hmm, no results for that </p>
       </div>
       {% else %}
-          <form method="POST" action="{{ gindex }}" id="grocery_list">
+          <form method="POST" action="{{ current_page }}" id="grocery_list">
               <ul class="grocery_container">
                   {% for item in groceries %} 
                       <li class="grocery_item">
