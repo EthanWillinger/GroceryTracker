@@ -341,6 +341,8 @@ def gpantry():
     groceries = load_user_pantry(user_id)
     grocery_names = [i.name for i in groceries]
     count_list = [i.quantity for i in groceries]
+
+    
     return render_template('gpantry.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form, count = count_list, groceries=grocery_names, logout=url_for("logout"))
 
 # user account page function
