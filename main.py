@@ -132,7 +132,7 @@ def decrInPantry(user_email, grocery_item):
             item_exists = db.session.query(db.session.query(pantry).filter_by(user_id = user_email, item_name = grocery_item, date_added=date_added).exists()).scalar()
             
             if item_exists:
-                item = db.session.query(pantry).filter(pantry.item_name == grocery_item,pantry.user_id == user_email, date_added=date_added).first()
+                item = db.session.query(pantry).filter(pantry.item_name == grocery_item,pantry.user_id == user_email).first()
                 if item.quantity > 0:
                     setattr(item, 'quantity', pantry.quantity-1)
                     db.session.commit()
@@ -143,7 +143,6 @@ def decrInPantry(user_email, grocery_item):
                     if item.quantity > 0:
                         setattr(item, 'quantity', pantry.quantity-1)
                         db.session.commit()
-
 
 
 #Calculate the days remaining on a selected food item, return the days_remaining
@@ -457,7 +456,8 @@ def load_user_pantry(users_email):
 
     for item in items:
         food_item = food(item.item_name, item.expiration_date, item.quantity)
-        user_items.append(food_item)
+        if food_item.quantity != 0:
+            user_items.append(food_item)
 
     return user_items
 
