@@ -228,7 +228,7 @@ def login():
                 login_user(user)
                 clearFormLogin(form)
                 session['user_id'] = user.email
-                return gindex()
+                return gpantry()
             else:
                 clearFormLogin(form)
                 return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), logout=url_for("logout"))
