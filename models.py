@@ -7,6 +7,7 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
+    notifications = db.Column(db.Boolean(), nullable=False)
 
     # Create A String
     def __repr__(self):
@@ -33,7 +34,7 @@ class grocery_index_items(db.Model):
 class pantry(db.Model):
     __bind_key__ = 'grocery_index'
     entry_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.String, nullable=False)
     quantity = db.Column(db.Integer)
     expiration_date = db.Column(db.String, nullable = False)
     item_name = db.Column(db.String, nullable = False)
