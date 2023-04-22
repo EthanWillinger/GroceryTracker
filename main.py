@@ -260,6 +260,8 @@ def gpantry():
 def account():
     # Search bar functionality
     search_form = Search_Form()
+    
+
     return render_template('account.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form, logout=url_for("logout"))
 
 # logout function
@@ -331,5 +333,10 @@ def load_user_pantry(users_email):
 
     return user_items
 
+def toggle_notification():
+    user_id = session.get('user_id')
+    user = db.session.query(Users).filter(user.id == user_id).first()
+    user.notifiactions = not user.notifications
+    
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
