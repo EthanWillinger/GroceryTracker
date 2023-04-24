@@ -1,0 +1,286 @@
+.navbar-custom {
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 3;
+    font-family: 'Merienda', Helvetica, sans-serif;
+    display: inline-block;
+    padding-top: 2vh;
+    color: white;
+}
+.navbar {
+    background: transparent;
+    border: none;
+}
+nav ul {
+    width: 100%;
+    list-style: none;
+    display: inline-block;
+}
+nav li {
+    float: left;
+    text-decoration: none;
+}
+nav a:hover {
+    text-decoration: none;
+}
+nav a.active {
+    background-color: #eee;
+    color: #444;
+    cursor: default;
+}
+.logo-container-fluid {
+    width: 20%;
+    height: 100%;
+    text-align: center;
+}
+
+.logo-container-fluid img {
+    width: 13em;
+    height: 100%;
+}
+
+@use postcss-color-function;
+@use postcss-nested;
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700,900');
+
+.search__container {
+    width: 45%;
+    height: 10%;
+    text-align: center;
+    margin-top: 3vh;
+    margin-left: 5vw;
+    margin-right: 3vw;
+    float: left;
+}
+
+.search__input {
+    width: 40vw;
+    padding: 12px 24px;
+
+    background-color: transparent;
+    transition: transform 250ms ease-in-out;
+    font-size: 14px;
+    line-height: 18px;
+
+    color: #50B9D9;
+    background-color: transparent;
+
+    background-image: url("data:image/svg+xml;charset=utf8, %3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 18px 18px;
+    background-position: 95% center;
+    border-radius: 50px;
+    border: 1px solid black;
+    transition: all 250ms ease-in-out;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+.search__input::placeholder {
+    color: #308eab;
+    letter-spacing: 1.5px;
+    font-family: 'Merienda', Helvetica, sans-serif;
+}
+
+.search__input:hover,
+focus {
+    padding: 12px 0;
+    outline: 0;
+    border: 1px solid transparent;
+    border-bottom: 1px solid black;
+    border-radius: 0;
+    background-position: 100% center;
+
+}
+.container-fluid {
+    width: 25%;
+    height: 100%;
+    overflow: auto;
+    margin-top: 0;
+    margin-left: 1vw;
+    text-align: center;
+    padding: none;
+}
+.container-fluid ul {
+    padding: 0;
+    width: 100%;
+    list-style: none;
+    display: inline-block;
+    margin-top: 3vh;
+    margin-bottom: 2vh;
+    color: white;
+}
+.container-fluid li {
+    float: left;
+    text-decoration: none;
+    height: 100%;
+    width: 33.3%;
+}
+.container-fluid li p {
+    font-size: small;
+    color: black;
+    font-weight: 600;
+}
+.container-fluid i {
+    font-size: 3.5em;
+
+}
+
+@use postcss-color-function;
+@use postcss-nested;
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700,900');
+
+.search__container {
+    width: 45%;
+    height: 10%;
+    text-align: center;
+    margin-top: 3vh;
+    margin-left: 5vw;
+    margin-right: 3vw;
+    float: left;
+}
+
+.search__input {
+    width: 40vw;
+    padding: 12px 24px;
+
+    background-color: transparent;
+    transition: transform 250ms ease-in-out;
+    font-size: 14px;
+    line-height: 18px;
+
+    color: #50B9D9;
+    background-color: transparent;
+
+    background-image: url("data:image/svg+xml;charset=utf8, %3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 18px 18px;
+    background-position: 95% center;
+    border-radius: 50px;
+    border: 1px solid black;
+    transition: all 250ms ease-in-out;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+.search__input::placeholder {
+    color: #308eab;
+    letter-spacing: 1.5px;
+    font-family: 'Merienda', Helvetica, sans-serif;
+}
+
+.search__input:hover,
+focus {
+    padding: 12px 0;
+    outline: 0;
+    border: 1px solid transparent;
+    border-bottom: 1px solid black;
+    border-radius: 0;
+    background-position: 100% center;
+
+}
+.container-fluid {
+    width: 25%;
+    height: 100%;
+    overflow: auto;
+    margin-top: 0;
+    margin-left: 1vw;
+    text-align: center;
+    padding: none;
+}
+.container-fluid ul {
+    padding: 0;
+    width: 100%;
+    list-style: none;
+    display: inline-block;
+    margin-top: 3vh;
+    margin-bottom: 2vh;
+    color: white;
+}
+.container-fluid li {
+    float: left;
+    text-decoration: none;
+    height: 100%;
+    width: 33.3%;
+}
+.container-fluid li p {
+    font-size: small;
+    color: black;
+    font-weight: 600;
+}
+.container-fluid i {
+    font-size: 3.5em;
+
+}
+
+/**listing**/
+.mt-50 {
+
+    margin-top: 50px;
+}
+
+.mb-50 {
+
+    margin-bottom: 50px;
+}
+
+
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.1875rem;
+}
+
+.card-img-actions {
+    position: relative;
+}
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.card-img {
+
+    width: 350px;
+}
+
+.star {
+    color: red;
+}
+
+.bg-cart {
+    background-color: orange;
+    color: #fff;
+}
+
+.bg-cart:hover {
+
+    color: #fff;
+}
+
+.bg-buy {
+    background-color: green;
+    color: #fff;
+    padding-right: 29px;
+}
+.bg-buy:hover {
+
+    color: #fff;
+}
+
+a {
+
+    text-decoration: none !important;
+}

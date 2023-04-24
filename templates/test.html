@@ -12,7 +12,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='test.css') }}">
 
     <!--Jquery Cdn -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"
@@ -101,7 +101,7 @@
             <ul class="grocery_container">
                 {% for item in groceries %}
                 <li class="grocery_item">
-                    <img class="item_img item" src="static/images/foods/Eggs.png"
+                    <img class="item_img item" src="static/images/foods/{{ item }}.png"
                         alt="an image of a/an {{ item }}">
                     <p class="desc">{{ item }}</p>
                     <button class="incr edit" name="increment" value="{{ item }}">+</button>
