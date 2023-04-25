@@ -6,14 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='test.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Varela&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <!--Jquery Cdn -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
@@ -45,53 +48,63 @@
 <body style="background: url({{ url_for('static', filename='images/bg.jpg') }});">
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-        <ul>
-            <li class="logo-container-fluid">
-                <a class="logo-left" href="{{ gindex}}"><img
-                        src="{{ url_for('static', filename='images/logo.png') }}" /></a>
-            </li>
+    <nav class="fixed-nav-bar">
+        <div id="menu" class="menu">
+            <a class="logo" href="{{ gindex }}"><img src="{{ url_for('static', filename='images/logo.png') }}" /></a>
 
-            <li class="search__container">
-                <form method="POST" action="{{ gindex }}">
-                    {{ form.hidden_tag() }}
-                    {% if form.search.errors %}
-                    {{ form.search(class="search__input", placeholder="Search a theme") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.search.errors%}
-                        <span>{{error}}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.search(class="search__input", placeholder="Search a theme") }}
-                    {% endif %}
-                </form>
-            </li>
+            <a class="show" href="#menu"><i class="material-symbols-outlined">expand_more</i> <p>Menu</p></a>
+            <a class="hide" href="#hidemenu"><i class="material-symbols-outlined">expand_less</i> <p>Menu</p></a>
+            <ul class="menu-items">
 
-            <li class="container-fluid">
-                <ul>
-                    <li><a class="icon-right" href="{{ gindex }}"><i style="color:White;"
-                                class="material-symbols-outlined">add_business</i>
-                            <p>Index</p>
-                        </a></li>
-                    <li><a class="icon-right" href="{{ gpantry }}"><i style="color:White;"
-                                class="material-symbols-outlined">kitchen</i>
-                            <p>Pantry</p>
-                        </a>
-                    <li><a class="icon-right" href="{{ account }}"><i style="color:White;"
-                                class="material-symbols-outlined">person</i>
-                            <p>Account</p>
-                        </a>
-                    <li><a class="icon-right" href="{{ logout }}"><i style="color:White;"
-                                class="material-symbols-outlined">logout</i>
-                            <p>Logout</p>
-                        </a>
-                </ul>
-            </li>
-        </ul>
+                <li>
+                    <a class="menu-icon" href="{{ gindex }}">
+                        <i style="color:White;" class="material-symbols-outlined">add_business</i>
+                        <p>Index</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="menu-icon" href="{{ gpantry }}">
+                        <i style="color:White;" class="material-symbols-outlined">kitchen</i>
+                        <p>Pantry</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="menu-icon" href="{{ account }}">
+                        <i style="color:White;" class="material-symbols-outlined">person</i>
+                        <p>Account</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="menu-icon" href="{{ logout }}">
+                        <i style="color:White;" class="material-symbols-outlined">logout</i>
+                        <p>Logout</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </nav>
 
-    <article>
+    <section class="content">
+        <div class="search__container">
+            <form method="POST" action="{{ gindex }}">
+                {{ form.hidden_tag() }}
+                {% if form.search.errors %}
+                {{ form.search(class="search__input", placeholder="Search a theme") }}
+                <div class="invalid-feedback">
+                    {% for error in form.search.errors%}
+                    <span>{{error}}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.search(class="search__input", placeholder="Search a theme") }}
+                {% endif %}
+            </form>
+        </div>
+    </section>
+    <section>
         {% if groceries == -1 %}
         <div class="no_results">
             <p> Hmm, no results for that </p>
@@ -101,8 +114,7 @@
             <ul class="grocery_container">
                 {% for item in groceries %}
                 <li class="grocery_item">
-                    <img class="item_img item" src="static/images/foods/Eggs.png"
-                        alt="an image of a/an {{ item }}">
+                    <img class="item_img item" src="static/images/foods/Eggs.png" alt="an image of a/an {{ item }}">
                     <p class="desc">{{ item }}</p>
                     <button class="incr edit" name="increment" value="{{ item }}">+</button>
                     <p name="count_var" class="count_var">{{ count[ loop.index0 ] }}</p>
@@ -112,7 +124,7 @@
             </ul>
         </form>
         {% endif %}
-    </article>
+    </section>
 
     {% block content %}
     {% endblock %}
