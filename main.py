@@ -13,10 +13,18 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text, select
 import bleach
 from datetime import datetime, date
+from flask_mail import Mail, Message
 
 
 # Create a flask app for the website
-app = Flask(__name__) 
+app = Flask(__name__)
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'thegrocerytrackerapp@gmail.com'
+app.config['MAIL_PASSWORD'] = 'hfpttptdrhqhnuuu'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 #Add Databases, default initial database is defined in the first line below.
 #Additional databases will be defined in 'SQLALCHEMY_BINDS'
@@ -98,6 +106,9 @@ def login():
                 login_user(user)
                 clearFormLogin(form)
                 session['user_id'] = user.email
+                msg = Message("Hello", sender='noreply@demo.com', recipients=[user.email])
+                msg.body = "Welcome to grocery tracker!"
+                mail.send(msg)
                 return gpantry()
             else:
                 clearFormLogin(form)
