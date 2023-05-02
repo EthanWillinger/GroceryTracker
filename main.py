@@ -80,6 +80,9 @@ def getUsersWithNotifs():
     user_quantity = str(db.session.query(Users).count())
     user_quantity = int(user_quantity.strip("SELECT "))
     
+    for i in range(1, user_quantity + 1):
+        user = db.session.query(Users).filter(Users.id == i).first()
+        notify = user.no
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func = ExpirationEmail, trigger="interval", seconds=10)
