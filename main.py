@@ -23,8 +23,8 @@ import atexit
 app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'thegrocerytrackerapp@gmail.com'
-app.config['MAIL_PASSWORD'] = 'hfpttptdrhqhnuuu'
+app.config['MAIL_USERNAME'] = 'grocerytrackerapplication@gmail.com'
+app.config['MAIL_PASSWORD'] = 'yeomyvobqcshhhoq'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
@@ -59,6 +59,44 @@ with app.app_context():
 #are relocated to their own /py file
 from pantry_modifiers import *
 
+#Function that determines what users notifications to
+def expiration_notification():
+    with app.app_context():
+        users_to_notify = []
+        items = []
+        expired_items_string = ""
+        users = db.session.query(Users).filter(Users.notifications == True).all()
+
+        class food:
+            def __init__(self,name,shelf_life, date_added):
+                self.name = name
+                self.shelf_life = shelf_life
+                self.date_added = date_added
+
+        
+        #For each user, grab the email and append it to the users_to_notify
+        for user in users:
+            user = user.email
+            users_to_notify.append(user)
+
+        #Begin looking for expired food
+        for user in users_to_notify:
+            users_food_items = db.session.query(pantry).filter(pantry.user_id == user).all()
+            #Check if each food item belonging to the user.email specified is expired or about to expire
+            for item in users_food_items:
+                item = food(item.item_name, item.expiration_date, item.date_added)
+                days_left = calculate_expiration_date(item.shelf_life, item.date_added)
+                days_left = int(days_left.strip(" days(s)"))
+
+                if days_left <= 1:
+                    expired_items_string = expired_items_string + item.name
+                
+            #Begin generating email for user
+            msg = Message("You have grocieres that are going bad!", sender = 'grocerytrackerapplication@gmail.com', recipients = [user])
+            msg.body = "The following groceries are either about to expire or are already rotten, check your grocery tracker for more information " + expired_items_string
+            mail.send(msg)
+            expired_items_string = ""
+
 #sanitizes user inputs to prevent injections
 def sanitize(data):
     return bleach.clean(data)
@@ -75,14 +113,10 @@ def getIndex():
         grocery_items.append(item)
     return grocery_items
 
-def getUsersWithNotifs():
-    users = []
-    user_quantity = str(db.session.query(Users).count())
-    user_quantity = int(user_quantity.strip("SELECT "))
     
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func = ExpirationEmail, trigger="interval", seconds=10)
+scheduler.add_job(func = expiration_notification, trigger="interval", seconds=60)
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
