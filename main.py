@@ -14,6 +14,9 @@ from sqlalchemy.sql import text, select
 import bleach
 from datetime import datetime, date
 from flask_mail import Mail, Message
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
+
 
 
 # Create a flask app for the website
@@ -71,6 +74,19 @@ def getIndex():
         item = item.Name
         grocery_items.append(item)
     return grocery_items
+
+def getUsersWithNotifs():
+    users = []
+    user_quantity = str(db.session.query(Users).count())
+    user_quantity = int(user_quantity.strip("SELECT "))
+    
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func = ExpirationEmail, trigger="interval", seconds=10)
+scheduler.start()
+atexit.register(lambda: scheduler.shutdown())
+
+
  
 # The intro page
 @app.route("/intro", methods=['GET', 'POST'])
@@ -106,9 +122,6 @@ def login():
                 login_user(user)
                 clearFormLogin(form)
                 session['user_id'] = user.email
-                msg = Message("Hello", sender='noreply@demo.com', recipients=[user.email])
-                msg.body = "Welcome to grocery tracker!"
-                mail.send(msg)
                 return gpantry()
             else:
                 clearFormLogin(form)

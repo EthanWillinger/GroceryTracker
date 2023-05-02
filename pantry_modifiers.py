@@ -1,10 +1,6 @@
 from datetime import datetime, date
-from main import db, grocery_index_items, pantry
-
-
-
-
-
+from models import grocery_index_items, pantry
+from main import db
 
 
 def incrInPantry(user_email, grocery_item):
