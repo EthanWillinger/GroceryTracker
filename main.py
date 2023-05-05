@@ -23,8 +23,8 @@ import atexit
 app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'grocerytrackerapplication@gmail.com'
-app.config['MAIL_PASSWORD'] = 'yeomyvobqcshhhoq'
+app.config['MAIL_USERNAME'] = 'thegrocerytrackerapp@gmail.com'
+app.config['MAIL_PASSWORD'] = 'aptvhrhyfqbngmkp'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
@@ -86,16 +86,22 @@ def expiration_notification():
             for item in users_food_items:
                 item = food(item.item_name, item.expiration_date, item.date_added)
                 days_left = calculate_expiration_date(item.shelf_life, item.date_added)
-                days_left = int(days_left.strip(" days(s)"))
+                days_left = days_left.split()
 
-                if days_left <= 1:
-                    expired_items_string = expired_items_string + item.name
-                
-            #Begin generating email for user
-            msg = Message("You have grocieres that are going bad!", sender = 'grocerytrackerapplication@gmail.com', recipients = [user])
-            msg.body = "The following groceries are either about to expire or are already rotten, check your grocery tracker for more information " + expired_items_string
-            mail.send(msg)
-            expired_items_string = ""
+                if 'day(s)' in days_left:
+                    print(days_left)
+                    days_left = int(days_left[0])
+                    if days_left <= 1:
+                        expired_items_string = expired_items_string + item.name + "\n"
+
+
+            print(expired_items_string)
+            if expired_items_string != "":    
+                #Begin generating email for user
+                msg = Message("You have grocieres that are going bad!", sender = 'thegrocerytrackerapp@gmail.com', recipients = [user])
+                msg.body = "The following groceries are either about to expire or are already rotten, check your grocery tracker for more information. \n" + expired_items_string
+                mail.send(msg)
+                expired_items_string = ""
 
 #sanitizes user inputs to prevent injections
 def sanitize(data):
@@ -116,7 +122,7 @@ def getIndex():
     
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func = expiration_notification, trigger="interval", seconds=60)
+scheduler.add_job(func = expiration_notification, trigger="interval", seconds=15)
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
