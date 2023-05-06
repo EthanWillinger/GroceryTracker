@@ -13,10 +13,21 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text, select
 import bleach
 from datetime import datetime, date
+from flask_mail import Mail, Message
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
+
 
 
 # Create a flask app for the website
-app = Flask(__name__) 
+app = Flask(__name__)
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'thegrocerytrackerapp@gmail.com'
+app.config['MAIL_PASSWORD'] = 'aptvhrhyfqbngmkp'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 #Add Databases, default initial database is defined in the first line below.
 #Additional databases will be defined in 'SQLALCHEMY_BINDS'
@@ -33,12 +44,64 @@ login_manager.session_protection = "strong"
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+from models import Users, grocery_index_items, pantry
+
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(Users, int(user_id))
 
+
 with app.app_context():
     db.create_all()
+
+#Temporary import location due to the fact that pantry_modifiers.py depends on the database
+#from this file to be initialized, this will be moved once the database models and initialization
+#are relocated to their own /py file
+from pantry_modifiers import *
+
+#Function that determines what users notifications to
+def expiration_notification():
+    with app.app_context():
+        users_to_notify = []
+        items = []
+        expired_items_string = ""
+        users = db.session.query(Users).filter(Users.notifications == True).all()
+
+        class food:
+            def __init__(self,name,shelf_life, date_added):
+                self.name = name
+                self.shelf_life = shelf_life
+                self.date_added = date_added
+
+        
+        #For each user, grab the email and append it to the users_to_notify
+        for user in users:
+            user = user.email
+            users_to_notify.append(user)
+
+        #Begin looking for expired food
+        for user in users_to_notify:
+            users_food_items = db.session.query(pantry).filter(pantry.user_id == user).all()
+            #Check if each food item belonging to the user.email specified is expired or about to expire
+            for item in users_food_items:
+                item = food(item.item_name, item.expiration_date, item.date_added)
+                days_left = calculate_expiration_date(item.shelf_life, item.date_added)
+                days_left = days_left.split()
+
+                if 'day(s)' in days_left:
+                    print(days_left)
+                    days_left = int(days_left[0])
+                    if days_left <= 1:
+                        expired_items_string = expired_items_string + item.name + "\n"
+
+
+            print(expired_items_string)
+            if expired_items_string != "":    
+                #Begin generating email for user
+                msg = Message("You have grocieres that are going bad!", sender = 'thegrocerytrackerapp@gmail.com', recipients = [user])
+                msg.body = "The following groceries are either about to expire or are already rotten, check your grocery tracker for more information. \n" + expired_items_string
+                mail.send(msg)
+                expired_items_string = ""
 
 #sanitizes user inputs to prevent injections
 def sanitize(data):
@@ -56,21 +119,15 @@ def getIndex():
         grocery_items.append(item)
     return grocery_items
 
-#This returns an array based on if search_term exists inside search_arr
-def find_item(search_item, search_arr):
-    results = []
+    
 
-    # search for all occurences of the search term within each grocery
-    for item in search_arr:
-        if search_item.lower() in item.lower() or item.lower() in search_item.lower():
-            results.append(item)
-
-    if results == []:
-        return -1
+scheduler = BackgroundScheduler()
+scheduler.add_job(func = expiration_notification, trigger="interval", seconds=15)
+scheduler.start()
+atexit.register(lambda: scheduler.shutdown())
 
 
-    return results
-
+ 
 # The intro page
 @app.route("/intro", methods=['GET', 'POST'])
 def intro():
@@ -133,7 +190,7 @@ def signup():
         if not email_exists:
 
             #Object that we will be placing in our add query
-            user = Users(username=username, email=email, password=password)
+            user = Users(username=username, email=email, password=password, notifications=False)
 
             #Add to database
             db.session.add(user)
@@ -278,6 +335,8 @@ def gpantry():
 def account():
     # Search bar functionality
     search_form = Search_Form()
+    
+
     return render_template('account.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form, logout=url_for("logout"))
 
 # logout function
@@ -287,6 +346,73 @@ def logout():
     logout_user()
     return redirect(url_for('intro'))
 
+def clearForm(form):
+    form.username.data = ''
+    form.email.data = ''
+    form.password.data = ''
+    return form
 
+def clearFormLogin(form):
+    form.email.data = ''
+    form.password.data = ''
+    return form
+
+
+#This returns an array based on if search_term exists inside search_arr
+def find_item(search_item, search_arr):
+    results = []
+
+    # search for all occurences of the search term within each grocery
+    for item in search_arr:
+        if search_item.lower() in item.lower() or item.lower() in search_item.lower():
+            results.append(item)
+
+    if results == []:
+        return -1
+
+
+    return results
+        
+
+#This function will do the following
+
+#1. Perform a query on the user_pantry table that only selects entries
+#   with the user_id matching the "users_email" argument. Save this to a variable
+
+#2. Create a class that will store the name, shelf life, and quantity of a given pantry record
+
+#3. For each record in the collection of records (items), create an instance of "food" and provide
+#   it with the records item_name, expiration_date, and quantity save it to variable called food_item
+
+#4. Add "food_item" to the user_items array
+#
+#5. Return user_items. This array of food objects will be used to display the name, quantity and to calculate
+#   the days remaining on the item
+def load_user_pantry(users_email):
+    if users_email == "":
+        return []
+    user_items = []
+    
+    items = db.session.query(pantry).filter(pantry.user_id == users_email).all()
+
+    class food:
+        def __init__(self,name,shelf_life, quantity, date_added):
+            self.name = name
+            self.shelf_life = shelf_life
+            self.quantity = quantity
+            self.date = date_added
+
+    for item in items:
+        food_item = food(item.item_name, item.expiration_date, item.quantity, item.date_added)
+        if food_item.quantity != 0:
+            user_items.append(food_item)
+
+    return user_items
+
+def toggle_notification():
+    user_id = session.get('user_id')
+    user = db.session.query(Users).filter(user.id == user_id).first()
+    user.notifiactions = not user.notifications
+    
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
