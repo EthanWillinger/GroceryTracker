@@ -31,9 +31,6 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
-    <!--Jquery Cdn -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"
-        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 
 
 </head>
@@ -128,7 +125,11 @@
                         <div class="pantrycomp autofill" style="width:100%;">
                             <p style="display:inline-block; font-weight: bolder;"> Auto-fill: </p>
                             <label style="display:inline-block;" class="switch">
-                                <input type="checkbox" value="{{ item }}" name="autofill" onchange="toggleAutofill()">
+                                {% if status[loop.index0] %}
+                                <input type="checkbox" value="{{ item }}" name="autofill" onchange="toggleAutofill(this)" checked="">
+                                {% else %}
+                                <input type="checkbox" value="{{ item }}" name="autofill" onchange="toggleAutofill(this)">
+                                {% endif %}
                                 <span class="slider round"></span>
                             </label>
                         </div>
@@ -137,6 +138,7 @@
                 </li>
                 {% endfor %}
             </ul>
+            <input id="autofill-selected" style="display:none;" value="none" name="autofill-selected">
         </form>
         {% endif %}
     </section>
@@ -144,19 +146,5 @@
     {% block content %}
     {% endblock %}
 </body>
-<script>
-    function toggleAutofill()
- {
-    var form = document.getElementById("grocery_list");
-    form.addEventListener('submit', function () {
-        console.log('invoked');
-        
-        return false;
-      });
-      
-      // form.submit();
-      form.dispatchEvent(new Event('submit'));
- }
-</script>
 
 </html>

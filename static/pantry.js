@@ -1,12 +1,5 @@
 function toggleAutofill(element)
  {
-    var form = document.getElementById("grocery_list");
-    form.addEventListener('submit', function () {
-        console.log('invoked');
-        
-        return false;
-      });
-      
-      // form.submit();
-      form.dispatchEvent(new Event('submit'));
+  document.getElementById("autofill-selected").value = element.value;
+  document.getElementById("grocery_list").submit();
  }
