@@ -54,24 +54,45 @@
             <ul class="menu-items">
 
                 <li>
-                    <a class="menu-icon" href="{{ gindex }}">
-                        <i style="color:White;" class="material-symbols-outlined">add_business</i>
+                    {% if request.endpoint == 'gindex' %}
+                        <a style="color:black; font-weight:bolder;" class="menu-icon" href="{{ gindex }}">
+                            <i class="material-symbols-outlined">add_business</i>
+                            <p>Index</p>
+                        </a>
+                    {% else %}
+                        <a style="color:White;" class="menu-icon" href="{{ gindex }}">
+                            <i class="material-symbols-outlined">add_business</i>
+                            <p>Index</p>
+                        </a>
+                    {% endif %}
+                </li>
+
+                <li>
+                    {% if request.endpoint == 'gpantry' %}
+                    <a style="color:black; font-weight:bolder;" class="menu-icon" href="{{ gpantry }}">
+                        <i class="material-symbols-outlined">kitchen</i>
                         <p>Index</p>
                     </a>
+                    {% else %}
+                        <a style="color:White;" class="menu-icon" href="{{ gpantry }}">
+                            <i class="material-symbols-outlined">kitchen</i>
+                            <p>Pantry</p>
+                        </a>
+                    {% endif %}
                 </li>
 
                 <li>
-                    <a class="menu-icon" href="{{ gpantry }}">
-                        <i style="color:White;" class="material-symbols-outlined">kitchen</i>
-                        <p>Pantry</p>
-                    </a>
-                </li>
-
-                <li>
-                    <a class="menu-icon" href="{{ account }}">
-                        <i style="color:White;" class="material-symbols-outlined">person</i>
-                        <p>Account</p>
-                    </a>
+                    {% if request.endpoint == 'account' %}
+                        <a style="color:black; font-weight:bolder;" class="menu-icon" href="{{ account }}">
+                            <i class="material-symbols-outlined">person</i>
+                            <p>Account</p>
+                        </a>
+                    {% else %}
+                        <a style="color:White;" class="menu-icon" href="{{ account }}">
+                            <i class="material-symbols-outlined">person</i>
+                            <p>Account</p>
+                        </a>
+                    {% endif %}
                 </li>
 
                 <li>
@@ -104,7 +125,7 @@
     <section>
         {% if groceries == -1 %}
         <div class="no_results">
-            <p> Hmm, no results for that </p>
+            <p> Nothing here... </p>
         </div>
         {% else %}
         <form method="POST" action="{{ current_page }}" id="grocery_list">
