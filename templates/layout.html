@@ -11,38 +11,31 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    {% if request.endpoint == 'gindex' %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    {% else %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pantry.css') }}">
+    <script src="{{ url_for('static', filename='pantry.js') }}"></script>
+    {% endif %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Varela&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <!--Jquery Cdn -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 
-    <script type="text/javascript">
-        $("button").on('click', function (e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: '{{ gindex }}',
-                data: {
-                    increment: $(".incr").val()
-                }
-            })
-        });
-        $("button").on('click', function (e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: '{{ gindex }}',
-                data: {
-                    decrement: $(".decr").val()
-                }
-            })
-        });
-    </script>
+
 </head>
 
 <body style="background: url({{ url_for('static', filename='images/bg.jpg') }});">
@@ -52,8 +45,12 @@
         <div id="menu" class="menu">
             <a class="logo" href="{{ gindex }}"><img src="{{ url_for('static', filename='images/logo.png') }}" /></a>
 
-            <a class="show" href="#menu"><i class="material-symbols-outlined">expand_more</i> <p>Menu</p></a>
-            <a class="hide" href="#hidemenu"><i class="material-symbols-outlined">expand_less</i> <p>Menu</p></a>
+            <a class="show" href="#menu"><i class="material-symbols-outlined">expand_more</i>
+                <p>Menu</p>
+            </a>
+            <a class="hide" href="#hidemenu"><i class="material-symbols-outlined">expand_less</i>
+                <p>Menu</p>
+            </a>
             <ul class="menu-items">
 
                 <li>
@@ -114,11 +111,29 @@
             <ul class="grocery_container">
                 {% for item in groceries %}
                 <li class="grocery_item">
-                    <img class="item_img item" src="static/images/foods/Eggs.png" alt="an image of a/an {{ item }}">
-                    <p class="desc">{{ item }}</p>
-                    <button class="incr edit" name="increment" value="{{ item }}">+</button>
-                    <p name="count_var" class="count_var">{{ count[ loop.index0 ] }}</p>
-                    <button class="decr edit" name="decrement" value="{{ item }}">-</button>
+                    <div class="itemcomp descgroup">
+                        <img class=" item_img item" src="static/images/foods/Eggs.png"
+                            alt="an image of a/an {{ item }}">
+                        <p class=" desc">{{ item }}</p>
+                    </div>
+                    <div class="itemcomp pantrygroup">
+                        <div class="itemcomp editgroup">
+                            <button class="incr edit" name="increment" value="{{ item }}">+</button>
+                            <p name=" count_var" class="count_var">{{ count[ loop.index0 ] }}</p>
+                            <button class=" decr edit" name="decrement" value="{{ item }}">-</button>
+                        </div>
+                        {% if request.endpoint != 'gindex' %}
+                        <p class="pantrycomp expiry">Expires in {{expiration[ loop.index0 ]}}</p>
+                        <button class="pantrycomp delbtn"><i class="material-symbols-outlined"> delete </i></button>
+                        <div class="pantrycomp autofill" style="width:100%;">
+                            <p style="display:inline-block; font-weight: bolder;"> Auto-fill: </p>
+                            <label style="display:inline-block;" class="switch">
+                                <input type="checkbox" value="{{ item }}" name="autofill" onchange="toggleAutofill()">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        {% endif %}
+                    </div>
                 </li>
                 {% endfor %}
             </ul>
@@ -129,5 +144,19 @@
     {% block content %}
     {% endblock %}
 </body>
+<script>
+    function toggleAutofill()
+ {
+    var form = document.getElementById("grocery_list");
+    form.addEventListener('submit', function () {
+        console.log('invoked');
+        
+        return false;
+      });
+      
+      // form.submit();
+      form.dispatchEvent(new Event('submit'));
+ }
+</script>
 
 </html>
