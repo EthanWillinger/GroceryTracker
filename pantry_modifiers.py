@@ -15,7 +15,6 @@ def incrInPantry(user_email, grocery_item):
     
     else:
          item = db.session.query(pantry).filter(pantry.item_name == grocery_item, pantry.user_id == user_email).first()
-         date_added = item.date_added
          item.quantity += 1
          db.session.commit()
 
@@ -24,17 +23,24 @@ def decrInPantry(user_email, grocery_item):
             item_exists = db.session.query(db.session.query(pantry).filter_by(user_id = user_email, item_name = grocery_item, date_added=date_added).exists()).scalar()
             
             if item_exists:
-                item = db.session.query(pantry).filter(pantry.item_name == grocery_item,pantry.user_id == user_email).first()
-                if item.quantity > 0:
-                    setattr(item, 'quantity', pantry.quantity-1)
-                    db.session.commit()
+                item = db.session.query(pantry).filter(pantry.item_name == grocery_item, pantry.user_id == user_email, pantry.date_added == date_added).first()
+                quantity = item.quantity - 1
+                if quantity > 0:
+                    item.quantity -= 1
+                else:
+                    item.delete()
+
+                db.session.commit()
             else:
+                #if the item being deleted was not added today
                 old_item_exists = db.session.query(db.session.query(pantry).filter_by(user_id = user_email, item_name = grocery_item).exists()).scalar()
                 if old_item_exists:
-                    item = db.session.query(pantry).filter(pantry.item_name == grocery_item,pantry.user_id == user_email).first()
-                    if item.quantity > 0:
-                        setattr(item, 'quantity', pantry.quantity-1)
-                        db.session.commit()
+                    item = db.session.query(pantry).filter(pantry.item_name == grocery_item, pantry.user_id == user_email).first()
+                    quantity = item.quantity - 1
+                    if quantity > 0:
+                        item.quantity -= 1
+                    else:
+                        item.delete()
 
 
 #Calculate the days remaining on a selected food item, return the days_remaining
@@ -95,3 +101,12 @@ def addToPantry(user_email, grocery_item, expiration, date_added):
 
     #finalize this action
     db.session.commit()
+
+def toggleAutofill(grocery_item, user_email, date_added):
+    item = db.session.query(pantry).filter(pantry.item_name == grocery_item, pantry.user_id == user_email, pantry.date_added == date_added).first()
+    if item.auto_fill == False:
+        item.auto_fill = True
+    else:
+        item.auto_fill = False
+    
+    print(item.auto_fill)

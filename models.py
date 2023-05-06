@@ -39,7 +39,7 @@ class pantry(db.Model):
     expiration_date = db.Column(db.String, nullable = False)
     item_name = db.Column(db.String, nullable = False)
     date_added = db.Column(db.String, nullable = False)
-    auto_replenish = db.Column(db.Boolean(), nullable = False)
+    auto_fill = db.Column(db.Boolean, default=False)
 
     # Create A String
     def __repr__(self):
