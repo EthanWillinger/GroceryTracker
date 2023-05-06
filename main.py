@@ -322,7 +322,7 @@ def gpantry():
         if "autofill" in request.form:
             print("auto")
             name = request.form.get("autofill")
-            date_ = date_added[grocery_names[name.index()]]
+            date_ = date_added[grocery_names[grocery_names.index(name)]]
             toggleAutofill(name, user_id, date_)
         
 
