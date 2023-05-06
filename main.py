@@ -304,7 +304,7 @@ def gpantry():
             return render_template('gpantry.html', current_page= url_for("gpantry"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
                                 account=url_for("account"), form=form, groceries=grocery_names, count = count_list, status=auto_fill, expiration = expiration, logout=url_for("logout"))
 
-        if "increment" in request.form:
+        elif "increment" in request.form:
             # increase the grocery count in the user's pantry
             print(user_id)
             
@@ -314,7 +314,7 @@ def gpantry():
             else:
                 return redirect(url_for('login'))
 
-        if "decrement" in request.form:
+        elif "decrement" in request.form:
             # decrease the grocery count in the user's pantry
             if user_id != "":
                 decrInPantry(user_id, request.form.get("decrement"))
@@ -322,7 +322,19 @@ def gpantry():
             else:
                 return redirect(url_for('login'))
         
-        if "autofill" in request.form:
+        elif "delete" in request.form:
+            name = request.form.get("delete")
+            date_ = date_added[grocery_names.index(name)]
+            deleteItem(name, user_id, date_)
+
+            groceries = load_user_pantry(user_id)
+            grocery_names = [i.name for i in groceries]
+            count_list = [i.quantity for i in groceries]
+            expiration = [i.shelf_life for i in groceries]
+            date_added = [i.date for i in groceries]
+            auto_fill = [i.auto_fill for i in groceries]  
+
+        elif "autofill" in request.form:
             name = request.form.get("autofill-selected")
             date_ = date_added[grocery_names.index(name)]
             toggleAutofill(name, user_id, date_)

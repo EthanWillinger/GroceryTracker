@@ -113,3 +113,8 @@ def toggleAutofill(grocery_item, user_email, date_added):
     
     #finalize this action
     db.session.commit()
+
+def deleteItem(grocery_item, user_email, date_added):
+    pantry.query.filter(pantry.item_name == grocery_item, pantry.user_id == user_email, pantry.date_added == date_added).delete()
+    #finalize this action
+    db.session.commit()
