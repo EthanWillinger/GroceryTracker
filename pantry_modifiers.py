@@ -101,3 +101,12 @@ def addToPantry(user_email, grocery_item, expiration, date_added):
 
     #finalize this action
     db.session.commit()
+
+def toggleAutofill(grocery_item, user_email, date_added):
+    item = db.session.query(pantry).filter(pantry.item_name == grocery_item, pantry.user_id == user_email, pantry.date_added == date_added).first()
+    if item.auto_fill == False:
+        item.auto_fill = True
+    else:
+        item.auto_fill = False
+    
+    print(item.auto_fill)
