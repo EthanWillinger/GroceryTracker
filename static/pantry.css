@@ -295,7 +295,7 @@ input:checked + .slider:before {
 
 
 /* Add responsiveness - on screens less than 800px wide, display the navbar vertically instead of horizontally */
-@media screen and(max-width: 800px) {
+@media screen and (max-width: 800px) {
     .menu {
         position: relative;
         padding-left: 0;
@@ -354,16 +354,30 @@ input:checked + .slider:before {
         margin-left: 15vw;
         margin-bottom: 10vh;
     }
-    .grocery_container {
-        display: inline-block;
-        column-count: 2;
+    .expiry {
+        font-size: 85%;
+        margin-left: 3vw;
     }
-    .grocery_item {
-        width: 70%;
-        display: inline-block;
+    .delbtn i {
+        font-size: 2.3em;
+        margin-top: 0.5vh;
     }
-    .count_var {
-        width: auto;
-        padding: 0.2em 0.3em;
+    /* The switch - the box around the slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 25px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 15px;
+        width: 15px;
+        left: 4px;
+        bottom: 5px;
+        background-color: white;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
     }
 }
