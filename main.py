@@ -360,7 +360,8 @@ def account():
         if "expiry" in request.form:
             this_user.notifications = not this_user.notifications
             db.session.commit()
-            
+        
+    #get required forms
     emailForm = UpdateEmail()
     pwdForm = UpdatePwd()
     notifs = this_user.notifications
