@@ -365,7 +365,7 @@ def account():
     pwdForm = UpdatePwd()
     notifs = this_user.notifications
 
-    return render_template('account.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), emailUpdate=emailForm, pwdUpdate=pwdForm, expiryStatus=notifs, logout=url_for("logout"))
+    return render_template('account.html', current_page= url_for("account"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), emailUpdate=emailForm, pwdUpdate=pwdForm, expiryStatus=notifs, logout=url_for("logout"))
 
 # logout functionn
 @app.route('/logout')

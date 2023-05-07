@@ -104,7 +104,7 @@
             <p> Your Account</p>
         </h1>
 
-        <form method="POST" action="http://localhost:5000/account" id="updateEmail">
+        <form method="POST" action="{{current_page}}" id="updateEmail">
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
@@ -118,7 +118,7 @@
         </form>
 
 
-        <form method="POST" action="http://localhost:5000/account" id="updatePwd">
+        <form method="POST" action="{{current_page}}" id="updatePwd">
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-lock"></i></span>
@@ -148,7 +148,7 @@
             </div>
         </form>
 
-        <form method="POST" action="http://localhost:5000/account" id="updateNotifs">
+        <form method="POST" action="{{current_page}}" id="updateNotifs">
             <h2>Notifications</h2>
             <label style="display:inline-block;" class="switch">
                 {% if expiryStatus %}
