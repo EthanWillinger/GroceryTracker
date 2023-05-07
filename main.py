@@ -2,7 +2,7 @@ import os
 import secrets
 import MySQLdb
 import requests
-from forms import Search_Form, LoginForm, RegisterForm
+from forms import *
 from flask import session, request
 from flask import Flask, render_template
 from flask import url_for, flash, redirect
@@ -165,13 +165,13 @@ def login():
                 return redirect(url_for('gpantry'))
             else:
                 clearFormLogin(form)
-                return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), logout=url_for("logout"))
+                return render_template('login.html', current_page= url_for("login"), form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), logout=url_for("logout"))
         else:
             clearFormLogin(form)
-            return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), logout=url_for("logout"))
+            return render_template('login.html', current_page= url_for("login"), form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), logout=url_for("logout"))
     
     clearFormLogin(form)
-    return render_template('login.html', form=form, wel_display="block", acc_display="none", display="none", signup=url_for("signup"), logout=url_for("logout"))
+    return render_template('login.html', current_page= url_for("login"), form=form, wel_display="block", acc_display="none", display="none", signup=url_for("signup"), logout=url_for("logout"))
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -202,16 +202,16 @@ def signup():
             clearForm(form)
 
             #Redirect user to the login page
-            return render_template('login.html', form=form, wel_display="none", acc_display="block", display="none", signup=url_for("signup"), logout=url_for("logout"))
+            return render_template('login.html', current_page= url_for("signup"),form=form, wel_display="none", acc_display="block", display="none", signup=url_for("signup"), logout=url_for("logout"))
 
         #If the user email already has an account in the database, reload the page and only clear the email field.
         else:
             # print("An account with this email already exists")
             clearForm(form)
-            return render_template('signup.html', form=form, display="block", login=url_for("login"), logout=url_for("logout"))
+            return render_template('signup.html', current_page= url_for("signup"), form=form, display="block", login=url_for("login"), logout=url_for("logout"))
     
     clearForm(form)
-    return render_template('signup.html', form=form, display="none", login=url_for("login"), logout=url_for("logout"))
+    return render_template('signup.html', current_page= url_for("signup"), form=form, display="none", login=url_for("login"), logout=url_for("logout"))
 
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
@@ -353,11 +353,19 @@ def gpantry():
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    # Search bar functionality
-    search_form = Search_Form()
-    
+    user_id = session.get('user_id')
+    this_user = db.session.query(Users).filter_by(email=user_id).first()
 
-    return render_template('account.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form, logout=url_for("logout"))
+    if request.method == "POST":
+        if "expiry" in request.form:
+            this_user.notifications = not this_user.notifications
+            db.session.commit()
+            
+    emailForm = UpdateEmail()
+    pwdForm = UpdatePwd()
+    notifs = this_user.notifications
+
+    return render_template('account.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), emailUpdate=emailForm, pwdUpdate=pwdForm, expiryStatus=notifs, logout=url_for("logout"))
 
 # logout function
 @app.route('/logout')

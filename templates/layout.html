@@ -16,10 +16,10 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     {% elif request.endpoint == 'gpantry' %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pantry.css') }}">
-    <script src="{{ url_for('static', filename='pantry.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/script.js') }}"></script>
     {% else %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='account.css') }}">
-    <script src="{{ url_for('static', filename='pantry.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/script.js') }}"></script>
     {% endif %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -150,9 +150,9 @@
                             <p style="display:inline-block; font-weight: bolder;"> Auto-fill: </p>
                             <label style="display:inline-block;" class="switch">
                                 {% if status[loop.index0] %}
-                                <input type="checkbox" value="{{ item }}" name="autofill" onchange="toggleAutofill(this)" checked="">
+                                <input type="checkbox" value="{{ item }}" name="autofill" onchange="toggleAutofill(this);" checked="">
                                 {% else %}
-                                <input type="checkbox" value="{{ item }}" name="autofill" onchange="toggleAutofill(this)">
+                                <input type="checkbox" value="{{ item }}" name="autofill" onchange="toggleAutofill(this);">
                                 {% endif %}
                                 <span class="slider round"></span>
                             </label>
