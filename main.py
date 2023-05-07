@@ -367,7 +367,7 @@ def account():
 
     return render_template('account.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), emailUpdate=emailForm, pwdUpdate=pwdForm, expiryStatus=notifs, logout=url_for("logout"))
 
-# logout function
+# logout functionn
 @app.route('/logout')
 @login_required
 def logout():
