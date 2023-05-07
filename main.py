@@ -372,7 +372,7 @@ def account():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('intro'))
+    return redirect(url_for('login'))
 
 def clearForm(form):
     form.username.data = ''
