@@ -110,11 +110,9 @@ def sanitize(data):
 def getIndex():
     #Build starting grocery_items list
     grocery_items = []
-    item_quantity = str(db.session.query(db.session.query(grocery_index_items).count()))
-    item_quantity = int(item_quantity.strip("SELECT "))
+    data = db.session.query(grocery_index_items).all()
 
-    for i in range(1, item_quantity + 1):
-        item = db.session.query(grocery_index_items).filter(grocery_index_items.id == i).first()
+    for item in data:
         item = item.Name
         grocery_items.append(item)
     return grocery_items
@@ -282,14 +280,14 @@ def gpantry():
          # Search bar
         Search_Term = request.form.get('search')
         if Search_Term != None:
-            grocery_items = find_item(Search_Term, grocery_names)
+            grocery_names = find_item(Search_Term, grocery_names)
             #if there are no results for the search, returns -1
-            if grocery_items != -1:
+            if grocery_names != -1:
                 # get the frequency and shelf life of each item in the user's pantry
                 # temporary format
-                count_list = [i.quantity for i in groceries if i.name in grocery_items]
-                expiration = [i.shelf_life for i in groceries if i.name in grocery_items]
-                auto_fill = [i.auto_fill for i in groceries if i.name in grocery_items]
+                count_list = [i.quantity for i in groceries if i.name in grocery_names]
+                expiration = [i.shelf_life for i in groceries if i.name in grocery_names]
+                auto_fill = [i.auto_fill for i in groceries if i.name in grocery_names]
 
 
             return render_template('gpantry.html', current_page= url_for("gpantry"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 

@@ -107,7 +107,7 @@
 
     <section class="content">
         <div class="search__container">
-            <form method="POST" action="{{ gindex }}">
+            <form method="POST" action="{{ current_page }}">
                 {{ form.hidden_tag() }}
                 {% if form.search.errors %}
                 {{ form.search(class="search__input", placeholder="Search a theme") }}
@@ -133,7 +133,7 @@
                 {% for item in groceries %}
                 <li class="grocery_item">
                     <div class="itemcomp descgroup">
-                        <img class=" item_img item" src="static/images/foods/Eggs.png"
+                        <img class=" item_img item" src="static/images/foods/{{ item }}.jpg"
                             alt="an image of a/an {{ item }}">
                         <p class=" desc">{{ item }}</p>
                     </div>

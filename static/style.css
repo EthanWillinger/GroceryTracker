@@ -146,8 +146,8 @@ focus {
     background: rgb(202, 193, 193);
 }
 .item_img {
-    width: 60%;
-    height: 70%;
+    width: 150px;
+    height: 130px;
 }
 .edit {
     padding: 0.3em 0.4em;
