@@ -116,34 +116,6 @@ focus {
     background-position: 100% center;
 
 }
-.container-fluid {
-    width: auto;
-    overflow: auto;
-    text-align: center;
-}
-.container-fluid ul {
-    padding: 0;
-    width: 100%;
-    list-style: none;
-    margin-bottom: 2vh;
-    color: white;
-}
-.container-fluid li {
-    text-align: center;
-    text-decoration: none;
-    height: auto;
-    display: inline-block;
-}
-
-.container-fluid li p {
-    font-size: small;
-    color: black;
-    font-weight: 600;
-}
-.container-fluid i {
-    font-size: 3em;
-}
-
 #grocery_list {
     margin: auto;
     width: auto;
@@ -174,8 +146,8 @@ focus {
     background: rgb(202, 193, 193);
 }
 .item_img {
-    width: 60%;
-    height: 70%;
+    width: 150px;
+    height: 130px;
 }
 .edit {
     padding: 0.3em 0.4em;

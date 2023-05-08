@@ -2,7 +2,7 @@ import os
 import secrets
 import MySQLdb
 import requests
-from forms import Search_Form, LoginForm, RegisterForm
+from forms import *
 from flask import session, request
 from flask import Flask, render_template
 from flask import url_for, flash, redirect
@@ -110,11 +110,9 @@ def sanitize(data):
 def getIndex():
     #Build starting grocery_items list
     grocery_items = []
-    item_quantity = str(db.session.query(db.session.query(grocery_index_items).count()))
-    item_quantity = int(item_quantity.strip("SELECT "))
+    data = db.session.query(grocery_index_items).all()
 
-    for i in range(1, item_quantity + 1):
-        item = db.session.query(grocery_index_items).filter(grocery_index_items.id == i).first()
+    for item in data:
         item = item.Name
         grocery_items.append(item)
     return grocery_items
@@ -162,16 +160,16 @@ def login():
                 login_user(user)
                 clearFormLogin(form)
                 session['user_id'] = user.email
-                return gpantry()
+                return redirect(url_for('gpantry'))
             else:
                 clearFormLogin(form)
-                return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), logout=url_for("logout"))
+                return render_template('login.html', current_page= url_for("login"), form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), logout=url_for("logout"))
         else:
             clearFormLogin(form)
-            return render_template('login.html', form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), logout=url_for("logout"))
+            return render_template('login.html', current_page= url_for("login"), form=form, wel_display="block", acc_display="none", display="block", login=url_for("login"), logout=url_for("logout"))
     
     clearFormLogin(form)
-    return render_template('login.html', form=form, wel_display="block", acc_display="none", display="none", signup=url_for("signup"), logout=url_for("logout"))
+    return render_template('login.html', current_page= url_for("login"), form=form, wel_display="block", acc_display="none", display="none", signup=url_for("signup"), logout=url_for("logout"))
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -202,16 +200,16 @@ def signup():
             clearForm(form)
 
             #Redirect user to the login page
-            return render_template('login.html', form=form, wel_display="none", acc_display="block", display="none", signup=url_for("signup"), logout=url_for("logout"))
+            return render_template('login.html', current_page= url_for("signup"),form=form, wel_display="none", acc_display="block", display="none", signup=url_for("signup"), logout=url_for("logout"))
 
         #If the user email already has an account in the database, reload the page and only clear the email field.
         else:
             # print("An account with this email already exists")
             clearForm(form)
-            return render_template('signup.html', form=form, display="block", login=url_for("login"), logout=url_for("logout"))
+            return render_template('signup.html', current_page= url_for("signup"), form=form, display="block", login=url_for("login"), logout=url_for("logout"))
     
     clearForm(form)
-    return render_template('signup.html', form=form, display="none", login=url_for("login"), logout=url_for("logout"))
+    return render_template('signup.html', current_page= url_for("signup"), form=form, display="none", login=url_for("login"), logout=url_for("logout"))
 
 # grocery index page function
 @app.route('/gindex', methods=['GET', 'POST'])
@@ -235,13 +233,13 @@ def gindex():
 
 
             return render_template('gindex.html', current_page= url_for("gindex"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
-                            account=url_for("account"), form=form, groceries=grocery_items, count = count_list, expiration = [], logout=url_for("logout"))
+                            account=url_for("account"), form=form, groceries=grocery_items, count = count_list, status = [], expiration = [], logout=url_for("logout"))
         elif Search_Term == " ":
             grocery_items = getIndex()
              # get the frequency of each item in the user's pantry
             count_list = get_quantity(grocery_items, user_id)
             return render_template('gindex.html', current_page= url_for("gindex"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
-                                account=url_for("account"), form=form, groceries=grocery_items, count = count_list, expiration = [], logout=url_for("logout"))
+                                account=url_for("account"), form=form, groceries=grocery_items, count = count_list, status = [], expiration = [], logout=url_for("logout"))
 
         if "increment" in request.form:
             # increase the grocery count in the user's pantry
@@ -262,7 +260,7 @@ def gindex():
 
 
     return render_template('gindex.html', current_page= url_for("gindex"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
-                        account=url_for("account"), form=form, groceries=grocery_items, count = count_list, expiration = [], logout=url_for("logout"))
+                        account=url_for("account"), form=form, groceries=grocery_items, count = count_list, status = [], expiration = [], logout=url_for("logout"))
 
 # grocery pantry page function
 @app.route('/gpantry', methods=['GET', 'POST'])
@@ -270,38 +268,41 @@ def gindex():
 def gpantry():
     form = Search_Form()
     user_id = session.get('user_id')
-    #temporary format
+
     groceries = load_user_pantry(user_id)
     grocery_names = [i.name for i in groceries]
     count_list = [i.quantity for i in groceries]
     expiration = [i.shelf_life for i in groceries]
     date_added = [i.date for i in groceries]
+    auto_fill = [i.auto_fill for i in groceries]
 
     if request.method == "POST":
          # Search bar
         Search_Term = request.form.get('search')
         if Search_Term != None:
-            grocery_items = find_item(Search_Term, grocery_names)
+            grocery_names = find_item(Search_Term, grocery_names)
             #if there are no results for the search, returns -1
-            if grocery_items != -1:
+            if grocery_names != -1:
                 # get the frequency and shelf life of each item in the user's pantry
                 # temporary format
-                count_list = [i.quantity for i in groceries if i.name == grocery_names]
-                expiration = [i.shelf_life for i in groceries if i.name == grocery_names]
+                count_list = [i.quantity for i in groceries if i.name in grocery_names]
+                expiration = [i.shelf_life for i in groceries if i.name in grocery_names]
+                auto_fill = [i.auto_fill for i in groceries if i.name in grocery_names]
 
 
             return render_template('gpantry.html', current_page= url_for("gpantry"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
-                            account=url_for("account"), form=form, groceries=grocery_names, count = count_list, expiration = expiration, logout=url_for("logout"))
+                            account=url_for("account"), form=form, groceries=grocery_names, count = count_list, status=auto_fill, expiration = expiration, logout=url_for("logout"))
         elif Search_Term == " ":
             # get the frequency of each item in the user's pantry
             #temporary format
             grocery_names = [i.name for i in groceries]
             count_list = [i.quantity for i in groceries]
             expiration = [i.shelf_life for i in groceries]
+            auto_fill = [i.auto_fill for i in groceries]
             return render_template('gpantry.html', current_page= url_for("gpantry"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), 
-                                account=url_for("account"), form=form, groceries=grocery_names, count = count_list, expiration = expiration, logout=url_for("logout"))
+                                account=url_for("account"), form=form, groceries=grocery_names, count = count_list, status=auto_fill, expiration = expiration, logout=url_for("logout"))
 
-        if "increment" in request.form:
+        elif "increment" in request.form:
             # increase the grocery count in the user's pantry
             print(user_id)
             
@@ -311,7 +312,7 @@ def gpantry():
             else:
                 return redirect(url_for('login'))
 
-        if "decrement" in request.form:
+        elif "decrement" in request.form:
             # decrease the grocery count in the user's pantry
             if user_id != "":
                 decrInPantry(user_id, request.form.get("decrement"))
@@ -319,32 +320,58 @@ def gpantry():
             else:
                 return redirect(url_for('login'))
         
-        if "autofill" in request.form:
-            print("auto")
-            name = request.form.get("autofill")
-            date_ = date_added[grocery_names[grocery_names.index(name)]]
+        elif "delete" in request.form:
+            name = request.form.get("delete")
+            date_ = date_added[grocery_names.index(name)]
+            deleteItem(name, user_id, date_)
+
+            groceries = load_user_pantry(user_id)
+            grocery_names = [i.name for i in groceries]
+            count_list = [i.quantity for i in groceries]
+            expiration = [i.shelf_life for i in groceries]
+            date_added = [i.date for i in groceries]
+            auto_fill = [i.auto_fill for i in groceries]  
+
+        elif "autofill" in request.form:
+            name = request.form.get("autofill-selected")
+            date_ = date_added[grocery_names.index(name)]
             toggleAutofill(name, user_id, date_)
-        
+            
+            groceries = load_user_pantry(user_id)
+            grocery_names = [i.name for i in groceries]
+            count_list = [i.quantity for i in groceries]
+            expiration = [i.shelf_life for i in groceries]
+            date_added = [i.date for i in groceries]
+            auto_fill = [i.auto_fill for i in groceries]      
 
     
-    return render_template('gpantry.html', current_page=url_for("gpantry"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=form, count = count_list, groceries=grocery_names, expiration=expiration, logout=url_for("logout"))
+    return render_template('gpantry.html', current_page=url_for("gpantry"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=form, count = count_list, groceries=grocery_names, expiration=expiration, status=auto_fill, logout=url_for("logout"))
 
 # user account page function
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    # Search bar functionality
-    search_form = Search_Form()
-    
+    user_id = session.get('user_id')
+    this_user = db.session.query(Users).filter_by(email=user_id).first()
 
-    return render_template('account.html', gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), form=search_form, logout=url_for("logout"))
+    if request.method == "POST":
+        if "expiry" in request.form:
+            this_user.notifications = not this_user.notifications
+            db.session.commit()
+        
+    #get required forms
+    emailForm = UpdateEmail()
+    pwdForm = UpdatePwd()
+    notifs = this_user.notifications
 
-# logout function
+    return render_template('account.html', current_page= url_for("account"), gindex=url_for("gindex"), gpantry=url_for("gpantry"), account=url_for("account"), emailUpdate=emailForm, pwdUpdate=pwdForm, expiryStatus=notifs, logout=url_for("logout"))
+
+# logout functionn
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('intro'))
+    return redirect(url_for('login'))
 
 def clearForm(form):
     form.username.data = ''
@@ -396,14 +423,15 @@ def load_user_pantry(users_email):
     items = db.session.query(pantry).filter(pantry.user_id == users_email).all()
 
     class food:
-        def __init__(self,name,shelf_life, quantity, date_added):
+        def __init__(self,name,shelf_life, quantity, date_added, auto_fill):
             self.name = name
             self.shelf_life = shelf_life
             self.quantity = quantity
             self.date = date_added
+            self.auto_fill = auto_fill
 
     for item in items:
-        food_item = food(item.item_name, item.expiration_date, item.quantity, item.date_added)
+        food_item = food(item.item_name, item.expiration_date, item.quantity, item.date_added, item.auto_fill)
         if food_item.quantity != 0:
             user_items.append(food_item)
 

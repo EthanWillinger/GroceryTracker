@@ -4,7 +4,7 @@
 {% block content %}
 <div class="signup-form">
   <a class= "logo-centered" href="/"><img src="{{ url_for('static', filename='images/logo.png') }}"/></a>
-  <form method="POST"  action="http://localhost:5000/login">
+  <form method="POST"  action="{{ current_page }}">
   <div class="sign-up-header">
   <h2 style="display:{{ wel_display }}">Welcome Back</h2>
   <h2 style="display:{{ acc_display }}">Account Created!</h2>

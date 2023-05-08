@@ -21,3 +21,19 @@ class RegisterForm(FlaskForm):
 class Search_Form(FlaskForm):
     search = StringField('Search')
 
+class UpdateEmail(FlaskForm):
+    email = StringField("Email",render_kw={"placeholder": "Email"}, validators=[validators.Email(message="Please enter a valid email address"), validators.DataRequired(message="Please Fill This Field")])
+    update = SubmitField("Update")
+
+class UpdatePwd(FlaskForm):
+    oldpassword = PasswordField("Password", render_kw={"placeholder": "Old Password"}, validators = [
+    validators.DataRequired(message="Please Fill This Field")])
+    newpassword = PasswordField("Password", render_kw={"placeholder": "New Password"}, validators =[
+    validators.DataRequired(message="Please Fill This Field"),
+    validators.EqualTo(fieldname="confirm", message="Your Passwords Do Not Match")
+    ])
+    confirm = PasswordField("Confirm Password", render_kw={"placeholder": "Confirm Password"}, validators=[validators.DataRequired(message="Please Fill This Field")])
+
+    setpwd = SubmitField("Set Password")
+
+

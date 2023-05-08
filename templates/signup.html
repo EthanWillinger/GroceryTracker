@@ -4,7 +4,7 @@
 
   <div class="signup-form">
     <a class= "logo-centered" href="/"><img src="{{ url_for('static', filename='images/logo.png') }}"/></a>
-    <form method="POST" action="http://localhost:5000/signup">
+    <form method="POST" action="{{ current_page }}">
       <div class="sign-up-header">
       <h2>Create an account</h2>
       <p>Please fill in this form to start tracking your groceries!</p>      
