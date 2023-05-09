@@ -120,7 +120,7 @@ def getIndex():
     
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func = expiration_notification, trigger="interval", seconds=15)
+scheduler.add_job(func = expiration_notification, trigger="interval", seconds=86400)
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
