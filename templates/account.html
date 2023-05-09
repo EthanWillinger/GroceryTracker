@@ -99,12 +99,12 @@
     </nav>
 
     <section id="account-box">
-        <h1 class="account-logo">
+        <h1 class="account-log">
             <i class="material-symbols-outlined">person</i>
             <p> Your Account</p>
         </h1>
 
-        <form method="POST" action="{{current_page}}" id="updateEmail">
+        <form method="POST" action="{{current_page}}" id="updateEmail" class="accountitem">
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
@@ -118,7 +118,7 @@
         </form>
 
 
-        <form method="POST" action="{{current_page}}" id="updatePwd">
+        <form method="POST" action="{{current_page}}" id="updatePwd" class="accountitem">
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-lock"></i></span>
@@ -148,7 +148,7 @@
             </div>
         </form>
 
-        <form method="POST" action="{{current_page}}" id="updateNotifs">
+        <form method="POST" action="{{current_page}}" id="updateNotifs" class="accountitem">
             <h2>Notifications</h2>
             <label style="display:inline-block;" class="switch">
                 {% if expiryStatus %}

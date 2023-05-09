@@ -134,8 +134,20 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+#account-box {
+    width: 100%;
+    text-align: center;
+    height: 10vh;
+    margin-top: 20vh;
+}
 
-
+.account-log i{
+    font-size: 4em;
+}
+.accountitem{
+    width: 20%;
+    display: inline-block;
+}
 /* Add responsiveness - on screens less than 800px wide, display the navbar vertically instead of horizontally */
 @media screen and (max-width: 800px) {
     .menu {
